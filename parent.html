@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة عين الوليّ - مدرسة البلاد القديم</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
+        :root {
+            --app-bg: #0f172a;
+            --surface-bg: #1e293b;
+            --card-bg: #334155;
+            --text-color: #f8fafc;
+            --border-color: #475569;
+        }
+
+        body.light-mode {
+            --app-bg: #f8fafc;
+            --surface-bg: #ffffff;
+            --card-bg: #f1f5f9;
+            --text-color: #0f172a;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--app-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        @media print {
+            @page { size: A4 portrait; margin: 0.8cm; }
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+            .print-area { display: block !important; }
+        }
+        .print-area { display: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- شريط التنقل العلوي -->
+    <header class="bg-slate-900/95 border-b border-slate-700/80 sticky top-0 z-40 backdrop-blur px-4 py-2.5 flex justify-between items-center shadow-md no-print">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-white text-base transition" title="العودة للرئيسية">🏠</a>
+            <div>
+                <h1 class="text-sm md:text-base font-black text-amber-400">بوابة عين الوليّ 👁️</h1>
+                <p class="text-[11px] text-slate-400 font-bold">مدرسة البلاد القديم الابتدائية الإعدادية للبنين</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button id="theme-btn" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 text-sm flex items-center justify-center">🌙</button>
+            <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 hover:bg-slate-700 text-slate-300">الرئيسية</a>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-grow p-3 md:p-6 max-w-4xl mx-auto w-full no-print">
+        
+        <!-- لافتة الترحيب -->
+        <div class="bg-gradient-to-r from-amber-600 via-amber-700 to-yellow-600 rounded-3xl p-6 mb-6 text-slate-950 shadow-xl text-center">
+            <div class="w-14 h-14 bg-slate-950/15 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-2">👁️</div>
+            <h2 class="text-xl md:text-2xl font-black mb-1">منصة عين الوليّ لمتابعة الطالب</h2>
+            <p class="text-xs md:text-sm font-bold text-slate-900">متابعة يومية ومباشرة للتحصيل الصفي، التميز، الانضباط، وسجل الحضور والغياب</p>
+        </div>
+
+        <!-- صندوق الاستعلام بالرقم الشخصي -->
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl p-5 md:p-6 mb-6 shadow-xl max-w-lg mx-auto text-center">
+            <label class="block text-xs md:text-sm font-bold text-slate-200 mb-2">أدخل الرقم الشخصي للطالب للاستعلام:</label>
+            <div class="flex gap-2">
+                <input type="text" id="parent-cpr-input" placeholder="أدخل الرقم الشخصي (مثال: 150413912)" class="flex-grow bg-slate-900 border border-slate-600 rounded-2xl px-4 py-2.5 text-sm md:text-base font-black text-amber-400 tracking-wider outline-none text-center focus:border-amber-400 transition">
+                <button id="parent-search-btn" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-black text-xs md:text-sm rounded-2xl shadow-lg transition active:scale-95">
+                    استعلام 🔍
+                </button>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2 font-bold">الرقم الشخصي مسجل في البطاقة الذكية والشهادات الرسمية للطالب</p>
+        </div>
+
+        <!-- بطاقة النتائج وملف الطالب المستعلم عنه -->
+        <div id="parent-result-container" class="hidden space-y-4">
+            
+            <!-- بطاقة تعريف الطالب -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 md:p-5 shadow-lg flex flex-wrap justify-between items-center gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-600/20 border border-sky-500/40 flex items-center justify-center text-2xl">🎓</div>
+                    <div>
+                        <h3 class="text-base md:text-lg font-black text-sky-400" id="parent-st-name">-</h3>
+                        <p class="text-xs text-slate-300 font-bold mt-0.5" id="parent-st-class">الصف: -</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs md:text-sm bg-amber-500/20 text-amber-400 border border-amber-500/40 px-3.5 py-1.5 rounded-xl font-black" id="parent-st-total-stars">⭐ 0 نقطة تميز</span>
+                    <button id="parent-print-report-btn" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-100 rounded-xl text-xs font-bold border border-slate-600 flex items-center gap-1">
+                        🖨️ طباعة إشعار المتابعة
+                    </button>
+                </div>
+            </div>
+
+            <!-- الجداول التفصيلية -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- سجل التميز والمشاركات الصفيّة -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-md flex flex-col">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-2">
+                        <h4 class="text-xs font-black text-amber-400 flex items-center gap-1.5">⭐ سجل التفاعل ونقاط التميز الصفي</h4>
+                        <span class="text-[10px] text-slate-400 font-bold" id="part-count-badge">0 مشاركة</span>
+                    </div>
+                    <div class="overflow-y-auto max-h-60 space-y-1.5 text-xs pr-1" id="parent-part-list"></div>
+                </div>
+
+                <!-- سجل الملاحظات والانضباط الصفي -->
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-md flex flex-col">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-2">
+                        <h4 class="text-xs font-black text-red-400 flex items-center gap-1.5">⚠️ الملاحظات السلوكية الصفيّة</h4>
+                        <span class="text-[10px] text-slate-400 font-bold" id="beh-count-badge">0 ملاحظة</span>
+                    </div>
+                    <div class="overflow-y-auto max-h-60 space-y-1.5 text-xs pr-1" id="parent-beh-list"></div>
+                </div>
+
+            </div>
+
+            <!-- سجل الحضور والغياب والتأخر الصباحي -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-md">
+                <h4 class="text-xs font-black text-sky-400 border-b border-slate-700 pb-2 mb-2 flex items-center gap-1.5">
+                    📅 سجل الحضور والغياب والتأخر الصباحي والاستئذان
+                </h4>
+                <div class="overflow-y-auto max-h-44 space-y-1.5 text-xs pr-1" id="parent-att-list"></div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- تذييل الصفحة الرسمي الثابت -->
+    <footer class="mt-auto bg-slate-900 border-t border-slate-800 py-3 px-4 text-center text-xs font-bold text-slate-400 no-print">
+        <p>إعداد وتصميم: <span class="text-sky-400 font-black">أ. صبري محمد حمد</span> | هاتف: <span class="text-amber-400 font-black tracking-wider">36864227</span> - مدرسة البلاد القديم الابتدائية الإعدادية للبنين</p>
+    </footer>
+
+    <!-- مساحة الطباعة الرسمية لولي الأمر A4 -->
+    <div class="print-area" id="print-parent-report">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px;">
+            <img src="https://i.postimg.cc/K88X7RLb/trwysyh-dhhbyt.png" alt="ترويسة المدرسة" style="width: 100%; max-height: 130px; object-fit: contain;">
+        </div>
+
+        <div style="text-align: center; border-bottom: 2px solid #b45309; padding-bottom: 8px; margin-bottom: 12px;">
+            <h2 style="font-size: 20px; font-weight: 900; margin: 0; color: #1e3a8a;">تقرير متابعة تحصيل وانضباط الطالب الصفي</h2>
+            <p style="font-size: 13px; font-weight: bold; color: #475569; margin: 3px 0 0 0;">بوابة عين الوليّ - مدرسة البلاد القديم الابتدائية الإعدادية للبنين</p>
+        </div>
+
+        <div style="background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 14px; font-weight: bold; color: #1e293b; line-height: 1.8;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>اسم الطالب: <span style="color: #1e3a8a; font-size: 16px;" id="p-st-name">-</span></span>
+                <span>الصف: <span style="color: #1e3a8a;" id="p-st-class">-</span></span>
+                <span>الرقم الشخصي: <span style="color: #1e3a8a;" id="p-st-cpr">-</span></span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span id="p-st-stars">إجمالي نقاط التميز: ⭐ 0</span>
+                <span>تاريخ استخراج الإشعار: <span id="p-report-date">-</span></span>
+            </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <h3 style="font-size: 14px; font-weight: 900; color: #1e3a8a; margin-bottom: 4px; border-bottom: 1px solid #cbd5e1; padding-bottom: 2px;">أولاً: نقاط التميز والمشاركات الصفيّة</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 15px;">
+                <thead>
+                    <tr style="background-color: #f1f5f9; -webkit-print-color-adjust: exact;">
+                        <th style="border: 1px solid #333; padding: 5px; width: 40px; text-align: center;">#</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: center; width: 130px;">اليوم والتاريخ</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: center; width: 80px;">الحصة</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: center;">المادة</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: center;">المعلم</th>
+                        <th style="border: 1px solid #333; padding: 5px; width: 90px; text-align: center;">النقاط</th>
+                    </tr>
+                </thead>
+                <tbody id="p-part-tbody"></tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <h3 style="font-size: 14px; font-weight: 900; color: #991b1b; margin-bottom: 4px; border-bottom: 1px solid #cbd5e1; padding-bottom: 2px;">ثانياً: الملاحظات السلوكية الصفيّة المرصودة</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 15px;">
+                <thead>
+                    <tr style="background-color: #fee2e2; -webkit-print-color-adjust: exact;">
+                        <th style="border: 1px solid #333; padding: 5px; width: 40px; text-align: center;">#</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: center; width: 130px;">اليوم والتاريخ</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: center; width: 80px;">الحصة</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: right;">نوع الملاحظة السلوكية</th>
+                        <th style="border: 1px solid #333; padding: 5px; text-align: center;">المعلم والمادة</th>
+                    </tr>
+                </thead>
+                <tbody id="p-beh-tbody"></tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 13px; font-weight: bold; padding: 0 15px;">
+            <div style="text-align: center;">
+                <div>المشرف الإداري</div>
+                <div style="margin-top: 25px; border-bottom: 1px dotted #333; width: 140px;"></div>
+            </div>
+            <div style="text-align: center;">
+                <div>توقيع ولي الأمر بالعلم والمتابعة</div>
+                <div style="margin-top: 25px; border-bottom: 1px dotted #333; width: 150px;"></div>
+            </div>
+            <div style="text-align: center;">
+                <div>مدير المدرسة</div>
+                <div style="margin-top: 8px; color: #1e3a8a;">الأستاذ: محمد ابراهيم محمد ناصر</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px; text-align: center; border-top: 1px dotted #94a3b8; padding-top: 6px; font-size: 11px; color: #64748b; font-weight: bold;">
+            إعداد وتصميم: أ. صبري محمد حمد - هاتف: 36864227
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYdX90JLSoQ6_rmLWX1UdzbtG-jVMZRO9-Ko6pjnwmULr9P4IQElHgLGXQCN0b9HILXg/exec";
+
+        let currentStudentData = null;
+
+        function getDateStr(d = new Date()) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        // استعلام بوابة عين الوليّ عبر الرقم الشخصي
+        document.getElementById('parent-search-btn').onclick = async () => {
+            const cpr = document.getElementById('parent-cpr-input').value.trim();
+            if (!cpr) {
+                alert('يرجى إدخال الرقم الشخصي للطالب.');
+                return;
+            }
+
+            const btn = document.getElementById('parent-search-btn');
+            btn.innerHTML = '⏳ جاري البحث...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?type=parentPortal&cpr=${encodeURIComponent(cpr)}`, { method: 'GET', redirect: 'follow' });
+                const data = await res.json();
+
+                if (data.status === "success") {
+                    currentStudentData = data;
+                    document.getElementById('parent-result-container').classList.remove('hidden');
+                    
+                    // بيانات البطاقة الرئيسية
+                    document.getElementById('parent-st-name').textContent = data.student.name;
+                    document.getElementById('parent-st-class').textContent = `الصف: ${data.student.className} | الرقم الشخصي: ${data.student.cpr}`;
+
+                    let totalStars = 0;
+                    data.participations.forEach(p => totalStars += Number(p.stars) || 0);
+                    document.getElementById('parent-st-total-stars').textContent = `⭐ ${totalStars} نقطة تميز`;
+
+                    // سرد المشاركات
+                    const partList = document.getElementById('parent-part-list');
+                    partList.innerHTML = '';
+                    document.getElementById('part-count-badge').textContent = `${data.participations.length} مشاركة`;
+                    if (data.participations.length === 0) {
+                        partList.innerHTML = '<p class="text-slate-400 py-4 text-center font-bold">لا توجد مشاركات مسجلة مؤخراً.</p>';
+                    } else {
+                        data.participations.forEach(p => {
+                            partList.innerHTML += `
+                                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-700 flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-sky-300">${p.subject} (أ. ${p.teacher})</div>
+                                        <div class="text-[10px] text-slate-400">${p.day} (${p.date}) - ${p.period}</div>
+                                    </div>
+                                    <span class="text-amber-400 font-black text-sm">⭐ ${p.stars}</span>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    // سرد المخالفات
+                    const behList = document.getElementById('parent-beh-list');
+                    behList.innerHTML = '';
+                    document.getElementById('beh-count-badge').textContent = `${data.behaviors.length} ملاحظة`;
+                    if (data.behaviors.length === 0) {
+                        behList.innerHTML = '<p class="text-emerald-400 py-4 text-center font-bold">سجل الطالب ناصع ولا توجد مخالفات سلوكية مسجلة.</p>';
+                    } else {
+                        data.behaviors.forEach(b => {
+                            behList.innerHTML += `
+                                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-red-900/50 flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-red-400">${b.reason}</div>
+                                        <div class="text-[10px] text-slate-400">${b.subject} (أ. ${b.teacher}) | ${b.day} (${b.date}) - ${b.period}</div>
+                                    </div>
+                                    <span class="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded font-bold border border-red-800">مخالفة</span>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    // سرد الحضور والغياب
+                    const attList = document.getElementById('parent-att-list');
+                    attList.innerHTML = '';
+                    if (!data.attendance || data.attendance.length === 0) {
+                        attList.innerHTML = '<p class="text-emerald-400 py-3 text-center font-bold">الطالب منتظم في الحضور ولا توجد أيام غياب أو تأخر مسجلة.</p>';
+                    } else {
+                        data.attendance.forEach(a => {
+                            const isLate = a.status.includes('تأخر') || a.status.includes('استئذان');
+                            const badgeColor = isLate ? 'bg-amber-950 text-amber-300 border-amber-800' : 'bg-red-950 text-red-300 border-red-800';
+                            attList.innerHTML += `
+                                <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-700 flex justify-between items-center">
+                                    <div>
+                                        <span class="font-bold text-slate-200">${a.date}</span>
+                                        ${a.notes ? `<span class="text-slate-400 text-[11px] mr-2">(${a.notes})</span>` : ''}
+                                    </div>
+                                    <span class="text-[11px] px-2 py-0.5 rounded font-bold border ${badgeColor}">${a.status}</span>
+                                </div>
+                            `;
+                        });
+                    }
+
+                } else {
+                    alert('لم يتم العثور على طالب مسجل بهذا الرقم الشخصي. تأكد من صحة الرقم المدرج.');
+                }
+            } catch(err) {
+                alert('تعذر جلب البيانات. يرجى التأكد من اتصال الإنترنت.');
+            } finally {
+                btn.innerHTML = 'استعلام 🔍';
+                btn.disabled = false;
+            }
+        };
+
+        // طباعة إشعار متابعة شامل لولي الأمر A4
+        document.getElementById('parent-print-report-btn').onclick = () => {
+            if (!currentStudentData) return;
+
+            const st = currentStudentData.student;
+            let totalStars = 0;
+            currentStudentData.participations.forEach(p => totalStars += Number(p.stars) || 0);
+
+            document.getElementById('p-st-name').textContent = st.name;
+            document.getElementById('p-st-class').textContent = st.className;
+            document.getElementById('p-st-cpr').textContent = st.cpr;
+            document.getElementById('p-st-stars').textContent = `إجمالي نقاط التميز: ⭐ ${totalStars}`;
+            document.getElementById('p-report-date').textContent = getDateStr();
+
+            // جدول المشاركات في الطباعة
+            const partTbody = document.getElementById('p-part-tbody');
+            partTbody.innerHTML = '';
+            if (currentStudentData.participations.length === 0) {
+                partTbody.innerHTML = '<tr><td colspan="6" style="border: 1px solid #333; padding: 6px; text-align: center; color: #64748b;">لا توجد مشاركات مسجلة.</td></tr>';
+            } else {
+                currentStudentData.participations.forEach((p, idx) => {
+                    partTbody.innerHTML += `
+                        <tr>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center; font-weight: bold;">${idx + 1}</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center;">${p.day} (${p.date})</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center;">${p.period}</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center; font-weight: bold;">${p.subject}</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center;">أ. ${p.teacher}</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center; font-weight: bold; color: #b45309;">⭐ ${p.stars}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // جدول المخالفات في الطباعة
+            const behTbody = document.getElementById('p-beh-tbody');
+            behTbody.innerHTML = '';
+            if (currentStudentData.behaviors.length === 0) {
+                behTbody.innerHTML = '<tr><td colspan="5" style="border: 1px solid #333; padding: 6px; text-align: center; color: #16a34a; font-weight: bold;">سجل الطالب ناصع ولا توجد مخالفات مسجلة.</td></tr>';
+            } else {
+                currentStudentData.behaviors.forEach((b, idx) => {
+                    behTbody.innerHTML += `
+                        <tr>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center; font-weight: bold;">${idx + 1}</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center;">${b.day} (${b.date})</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center;">${b.period}</td>
+                            <td style="border: 1px solid #333; padding: 5px; font-weight: bold; color: #991b1b;">${b.reason}</td>
+                            <td style="border: 1px solid #333; padding: 5px; text-align: center;">أ. ${b.teacher} (${b.subject})</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const originalTitle = document.title;
+            document.title = `اشعار_متابعة_${st.name}_${getDateStr()}`;
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => { document.title = originalTitle; }, 1000);
+            }, 100);
+        };
+
+        // تبديل الوضع الليلي
+        document.getElementById('theme-btn').onclick = () => {
+            document.body.classList.toggle('light-mode');
+            document.getElementById('theme-btn').textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+        };
+    </script>
+</body>
+</html>
