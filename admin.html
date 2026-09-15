@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة القيادة المركزية - إدارة المدرسة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
+        :root {
+            --app-bg: #0f172a;
+            --surface-bg: #1e293b;
+            --card-bg: #334155;
+            --text-color: #f8fafc;
+            --border-color: #475569;
+        }
+
+        body.light-mode {
+            --app-bg: #f8fafc;
+            --surface-bg: #ffffff;
+            --card-bg: #f1f5f9;
+            --text-color: #0f172a;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--app-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        @media print {
+            @page { size: A4 portrait; margin: 0.8cm; }
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+            .print-area { display: block !important; }
+        }
+        .print-area { display: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- شريط التنقل العلوي -->
+    <header class="bg-slate-900/95 border-b border-slate-700/80 sticky top-0 z-40 backdrop-blur px-4 py-2.5 flex justify-between items-center shadow-md no-print">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-white text-base transition" title="العودة للرئيسية">🏠</a>
+            <div>
+                <h1 class="text-sm md:text-base font-black text-purple-400">لوحة الإدارة والمدير العام 👑</h1>
+                <p class="text-[11px] text-slate-400 font-bold">مدرسة البلاد القديم الابتدائية الإعدادية للبنين</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button id="theme-btn" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 text-sm flex items-center justify-center">🌙</button>
+            <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 hover:bg-slate-700 text-slate-300">الرئيسية</a>
+        </div>
+    </header>
+
+    <!-- شاشة تسجيل دخول المدير السريعة -->
+    <main class="flex-grow p-3 md:p-6 max-w-6xl mx-auto w-full no-print">
+        
+        <div id="admin-lock" class="max-w-md mx-auto bg-slate-900 border border-slate-800 p-6 md:p-8 rounded-3xl shadow-2xl mt-12 text-center">
+            <div class="w-16 h-16 bg-purple-500/20 border border-purple-500/40 text-purple-400 rounded-3xl mx-auto flex items-center justify-center text-3xl mb-3">👑</div>
+            <h2 class="text-base md:text-lg font-black text-slate-100 mb-1">تسجيل دخول الإدارة والمدير العام</h2>
+            <p class="text-xs text-slate-400 font-bold mb-4">أدخل الرمز السري المعتمد لفتح لوحة التحكم المركزية</p>
+
+            <div class="space-y-3">
+                <input type="password" id="admin-pin" placeholder="PIN" class="w-full bg-slate-950 border border-slate-700 text-center py-2.5 rounded-2xl text-purple-400 font-black tracking-widest text-xl outline-none focus:border-purple-400 transition">
+                <button id="admin-login-btn" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-black text-xs md:text-sm rounded-2xl shadow-lg transition active:scale-95">
+                    دخول لوحة القيادة 🔓
+                </button>
+            </div>
+
+            <div class="text-[11px] text-slate-500 font-bold mt-4 pt-3 border-t border-slate-800">
+                رمز الدخول المعتمد: <span class="text-purple-400 font-mono">9999</span>
+            </div>
+        </div>
+
+        <!-- اللوحة المركزية بعد التحقق -->
+        <div id="admin-panel" class="hidden space-y-4">
+            
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-wrap justify-between items-center gap-3 shadow-lg">
+                <div>
+                    <h2 class="text-base font-black text-purple-400">مركز الرقابة والمتابعة الشاملة للمدرسة</h2>
+                    <p class="text-xs text-slate-400 font-bold">مدير المدرسة: الأستاذ محمد إبراهيم محمد ناصر</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="admin-refresh-btn" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-black rounded-xl shadow flex items-center gap-1">
+                        🔄 تحديث السجلات
+                    </button>
+                    <button id="admin-print-all-btn" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-black rounded-xl shadow flex items-center gap-1">
+                        🖨️ طباعة التقرير العام
+                    </button>
+                    <button id="admin-logout-btn" class="px-3 py-1.5 bg-slate-700 hover:bg-red-600 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition">
+                        خروج ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- بطاقات الإحصاءات السريعة -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl text-center shadow-md">
+                    <div class="text-[11px] text-slate-400 font-bold mb-1">إجمالي الفصول المعتمدة</div>
+                    <div class="text-2xl font-black text-sky-400">16 صفاً</div>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl text-center shadow-md">
+                    <div class="text-[11px] text-slate-400 font-bold mb-1">إجمالي طلاب المدرسة</div>
+                    <div class="text-2xl font-black text-emerald-400">496 طالباً</div>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl text-center shadow-md">
+                    <div class="text-[11px] text-slate-400 font-bold mb-1">المخالفات الموثقة بالسحابة</div>
+                    <div class="text-2xl font-black text-red-400" id="stat-incidents-count">0</div>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl text-center shadow-md">
+                    <div class="text-[11px] text-slate-400 font-bold mb-1">الكادر التعليمي</div>
+                    <div class="text-2xl font-black text-amber-400">48 معلماً</div>
+                </div>
+            </div>
+
+            <!-- شريط الفلاتر والبحث للمدير -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-3 gap-3 shadow-md">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">تصفية حسب الصف:</label>
+                    <select id="admin-filter-class" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2 text-xs font-black text-purple-300 outline-none">
+                        <option value="all">جميع صفوف المدرسة (16 صفاً)</option>
+                        <option value="سادس ابتدائي 1">سادس ابتدائي 1</option>
+                        <option value="سادس ابتدائي 2">سادس ابتدائي 2</option>
+                        <option value="سادس ابتدائي 3">سادس ابتدائي 3</option>
+                        <option value="أول إعدادي 1">أول إعدادي 1</option>
+                        <option value="أول إعدادي 2">أول إعدادي 2</option>
+                        <option value="أول إعدادي 3">أول إعدادي 3</option>
+                        <option value="أول إعدادي 4">أول إعدادي 4</option>
+                        <option value="ثاني إعدادي 1">ثاني إعدادي 1</option>
+                        <option value="ثاني إعدادي 2">ثاني إعدادي 2</option>
+                        <option value="ثاني إعدادي 3">ثاني إعدادي 3</option>
+                        <option value="ثاني إعدادي 4">ثاني إعدادي 4</option>
+                        <option value="ثالث إعدادي 1">ثالث إعدادي 1</option>
+                        <option value="ثالث إعدادي 2">ثالث إعدادي 2</option>
+                        <option value="ثالث إعدادي 3">ثالث إعدادي 3</option>
+                        <option value="ثالث إعدادي 4">ثالث إعدادي 4</option>
+                        <option value="ثالث إعدادي 5">ثالث إعدادي 5</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">بحث باسم الطالب أو المعلم:</label>
+                    <input type="text" id="admin-search-input" placeholder="اكتب اسم الطالب أو المعلم..." class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2 text-xs font-bold text-slate-100 outline-none">
+                </div>
+                <div class="flex items-end">
+                    <span class="text-xs font-bold text-slate-400 mb-2">السجلات المعروضة: <span id="displayed-rows-count" class="text-amber-400 font-black">0</span></span>
+                </div>
+            </div>
+
+            <!-- جدول العمليات والسجلات الموحدة -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-slate-900 text-slate-300 font-black">
+                            <tr>
+                                <th class="p-2.5 text-center w-10">#</th>
+                                <th class="p-2.5">اسم الطالب</th>
+                                <th class="p-2.5 text-center">الصف</th>
+                                <th class="p-2.5">نوع الملاحظة السلوكية</th>
+                                <th class="p-2.5 text-center">المعلم الراصد</th>
+                                <th class="p-2.5 text-center">المادة</th>
+                                <th class="p-2.5 text-center">التاريخ والحصة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-700/60 bg-slate-800/70 font-bold">
+                            <tr><td colspan="7" class="p-6 text-center text-slate-400">جاري انتظار البيانات...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- تذييل الصفحة الرسمي -->
+    <footer class="mt-auto bg-slate-900 border-t border-slate-800 py-3 px-4 text-center text-xs font-bold text-slate-400 no-print">
+        <p>إعداد وتصميم: <span class="text-sky-400 font-black">أ. صبري محمد حمد</span> | هاتف: <span class="text-amber-400 font-black tracking-wider">36864227</span> - مدرسة البلاد القديم الابتدائية الإعدادية للبنين</p>
+    </footer>
+
+    <!-- مساحة الطباعة الإدارية الشاملة A4 -->
+    <div class="print-area" id="print-admin-sheet">
+        <div style="width: 100%; text-align: center; margin-bottom: 12px;">
+            <img src="https://i.postimg.cc/K88X7RLb/trwysyh-dhhbyt.png" alt="ترويسة المدرسة" style="width: 100%; max-height: 130px; object-fit: contain;">
+        </div>
+
+        <div style="text-align: center; border-bottom: 2px solid #b45309; padding-bottom: 8px; margin-bottom: 12px;">
+            <h2 style="font-size: 20px; font-weight: 900; margin: 0; color: #1e3a8a;">تقرير المتابعة والانضباط الصفي المركزي</h2>
+            <div style="display: flex; justify-content: space-around; font-size: 13px; font-weight: bold; margin-top: 6px; color: #333;">
+                <span>إشراف: الإدارة العامة للمدرسة</span>
+                <span id="p-admin-filter-class">النطاق: جميع الصفوف</span>
+                <span id="p-admin-date">التاريخ: -</span>
+            </div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px;">
+            <thead>
+                <tr style="background-color: #fee2e2; -webkit-print-color-adjust: exact;">
+                    <th style="border: 1px solid #333; padding: 6px; width: 35px; text-align: center;">#</th>
+                    <th style="border: 1px solid #333; padding: 6px; width: 140px; text-align: right;">اسم الطالب</th>
+                    <th style="border: 1px solid #333; padding: 6px; width: 90px; text-align: center;">الصف</th>
+                    <th style="border: 1px solid #333; padding: 6px; text-align: right;">الملاحظة المرصودة</th>
+                    <th style="border: 1px solid #333; padding: 6px; width: 120px; text-align: center;">المعلم</th>
+                    <th style="border: 1px solid #333; padding: 6px; width: 90px; text-align: center;">المادة</th>
+                    <th style="border: 1px solid #333; padding: 6px; width: 110px; text-align: center;">التاريخ</th>
+                </tr>
+            </thead>
+            <tbody id="p-admin-tbody"></tbody>
+        </table>
+
+        <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 13px; font-weight: bold; padding: 0 20px;">
+            <div style="text-align: center;">
+                <div>المدير المساعد</div>
+                <div style="margin-top: 25px; border-bottom: 1px dotted #333; width: 140px;"></div>
+            </div>
+            <div style="text-align: center;">
+                <div>مدير المدرسة</div>
+                <div style="margin-top: 8px; color: #1e3a8a;">الأستاذ: محمد إبراهيم محمد ناصر</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; border-top: 1px dotted #94a3b8; padding-top: 6px; font-size: 11px; color: #64748b; font-weight: bold;">
+            إعداد وتصميم: أ. صبري محمد حمد - هاتف: 36864227
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYdX90JLSoQ6_rmLWX1UdzbtG-jVMZRO9-Ko6pjnwmULr9P4IQElHgLGXQCN0b9HILXg/exec";
+
+        let allSchoolIncidents = [];
+
+        function getDateStr(d = new Date()) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        // تسجيل دخول المدير
+        document.getElementById('admin-login-btn').onclick = () => {
+            const pin = document.getElementById('admin-pin').value.trim();
+            if (pin === "9999") {
+                document.getElementById('admin-pin').value = '';
+                document.getElementById('admin-lock').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                fetchAdminData();
+            } else {
+                alert('رمز الدخول غير صحيح! تأكد من إدخال PIN الصحيح للإدارة.');
+            }
+        };
+
+        // خروج المدير
+        document.getElementById('admin-logout-btn').onclick = () => {
+            document.getElementById('admin-lock').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        };
+
+        // استدعاء البيانات من السحابة
+        async function fetchAdminData() {
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-purple-400 font-bold">⏳ جاري الاتصال بالسحابة وسحب سجلات المدرسة...</td></tr>';
+            try {
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?type=supervisorData`, { method: 'GET', redirect: 'follow' });
+                allSchoolIncidents = await res.json();
+                document.getElementById('stat-incidents-count').textContent = allSchoolIncidents.length;
+                renderAdminTable();
+            } catch(e) {
+                tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-red-400 font-bold">تعذر الاتصال بجدول البيانات السحابي.</td></tr>';
+            }
+        }
+
+        document.getElementById('admin-refresh-btn').onclick = fetchAdminData;
+
+        // رسم الجدول والفلترة
+        function renderAdminTable() {
+            const cls = document.getElementById('admin-filter-class').value;
+            const query = document.getElementById('admin-search-input').value.trim().toLowerCase();
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = '';
+
+            const filtered = allSchoolIncidents.filter(item => {
+                if (cls !== 'all' && item.className !== cls) return false;
+                if (query) {
+                    const matchSt = item.studentName && item.studentName.toLowerCase().includes(query);
+                    const matchTch = item.teacherName && item.teacherName.toLowerCase().includes(query);
+                    if (!matchSt && !matchTch) return false;
+                }
+                return true;
+            });
+
+            document.getElementById('displayed-rows-count').textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400 font-bold">لا توجد سجلات مطابقة للبحث أو الفلتر المحدد.</td></tr>';
+                return;
+            }
+
+            filtered.forEach((inc, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-700/50 transition";
+                tr.innerHTML = `
+                    <td class="p-2.5 text-center text-slate-400">${idx + 1}</td>
+                    <td class="p-2.5 font-black text-sky-300">${inc.studentName}</td>
+                    <td class="p-2.5 text-center font-bold text-amber-400">${inc.className}</td>
+                    <td class="p-2.5 text-red-400 font-bold">${inc.reason}</td>
+                    <td class="p-2.5 text-center text-slate-200 font-bold">${inc.teacherName}</td>
+                    <td class="p-2.5 text-center text-slate-400">${inc.subject}</td>
+                    <td class="p-2.5 text-center text-slate-400 text-[11px]">${inc.day} (${inc.date}) - ${inc.period}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('admin-filter-class').onchange = renderAdminTable;
+        document.getElementById('admin-search-input').oninput = renderAdminTable;
+
+        // طباعة تقرير الإدارة المركزي A4
+        document.getElementById('admin-print-all-btn').onclick = () => {
+            const cls = document.getElementById('admin-filter-class').value;
+            const query = document.getElementById('admin-search-input').value.trim().toLowerCase();
+
+            const filtered = allSchoolIncidents.filter(item => {
+                if (cls !== 'all' && item.className !== cls) return false;
+                if (query) {
+                    const matchSt = item.studentName && item.studentName.toLowerCase().includes(query);
+                    const matchTch = item.teacherName && item.teacherName.toLowerCase().includes(query);
+                    if (!matchSt && !matchTch) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                alert('لا توجد سجلات متاحة للطباعة في النطاق المحدد.');
+                return;
+            }
+
+            document.getElementById('p-admin-filter-class').textContent = cls === 'all' ? 'النطاق: جميع صفوف المدرسة' : `الصف: ${cls}`;
+            document.getElementById('p-admin-date').textContent = `التاريخ: ${getDateStr()}`;
+
+            const tbody = document.getElementById('p-admin-tbody');
+            tbody.innerHTML = '';
+            filtered.forEach((inc, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="border: 1px solid #333; padding: 5px; text-align: center; font-weight: bold;">${idx + 1}</td>
+                        <td style="border: 1px solid #333; padding: 5px; font-weight: bold; color: #1e3a8a;">${inc.studentName}</td>
+                        <td style="border: 1px solid #333; padding: 5px; text-align: center; font-weight: bold;">${inc.className}</td>
+                        <td style="border: 1px solid #333; padding: 5px; color: #991b1b; font-weight: bold;">${inc.reason}</td>
+                        <td style="border: 1px solid #333; padding: 5px; text-align: center;">${inc.teacherName}</td>
+                        <td style="border: 1px solid #333; padding: 5px; text-align: center;">${inc.subject}</td>
+                        <td style="border: 1px solid #333; padding: 5px; text-align: center;">${inc.day} (${inc.date})</td>
+                    </tr>
+                `;
+            });
+
+            const originalTitle = document.title;
+            document.title = `تقرير_الادارة_العام_${getDateStr()}`;
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => { document.title = originalTitle; }, 1000);
+            }, 100);
+        };
+
+        // تبديل الوضع الليلي
+        document.getElementById('theme-btn').onclick = () => {
+            document.body.classList.toggle('light-mode');
+            document.getElementById('theme-btn').textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+        };
+    </script>
+</body>
+</html>
