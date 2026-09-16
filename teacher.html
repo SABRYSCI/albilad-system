@@ -15,16 +15,16 @@
             --app-bg: #0f172a;
             --surface-bg: #1e293b;
             --card-bg: #334155;
-            --text-color: #f8fafc;
+            --text-main: #ffffff;
             --border-color: #475569;
             --gold: #f59e0b;
         }
 
         body.light-mode {
-            --app-bg: #f8fafc;
+            --app-bg: #f1f5f9;
             --surface-bg: #ffffff;
-            --card-bg: #f1f5f9;
-            --text-color: #0f172a;
+            --card-bg: #e2e8f0;
+            --text-main: #0f172a;
             --border-color: #cbd5e1;
             --gold: #d97706;
         }
@@ -32,7 +32,7 @@
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: var(--app-bg);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -41,7 +41,7 @@
         .student-item {
             background-color: var(--surface-bg);
             border: 1.5px solid var(--border-color);
-            color: var(--text-color);
+            color: var(--text-main);
             transition: all 0.15s ease-in-out;
         }
 
@@ -52,12 +52,31 @@
 
         .student-item.has-stars {
             border-color: var(--gold);
-            background-color: rgba(245, 158, 11, 0.15);
+            background-color: rgba(245, 158, 11, 0.18);
         }
 
         .student-item.already-chosen {
             opacity: 0.65;
-            background-color: rgba(15, 23, 42, 0.35);
+            background-color: rgba(15, 23, 42, 0.45);
+        }
+
+        .student-name-text {
+            color: var(--text-main) !important;
+            font-weight: 800;
+        }
+
+        /* نافذة المؤقت العائمة والقابلة للتحريك */
+        #floating-timer-modal {
+            position: fixed;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            cursor: default;
+        }
+        #timer-drag-header {
+            cursor: move;
+            user-select: none;
         }
 
         .confetti-piece {
@@ -96,6 +115,10 @@
         </div>
 
         <div class="flex items-center gap-2">
+            <!-- زر فتح ساعة الإيقاف المميزة -->
+            <button id="open-timer-btn" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow flex items-center gap-1 transition active:scale-95">
+                ⏱️ ساعة النشاط
+            </button>
             <button id="theme-btn" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 text-sm flex items-center justify-center">🌙</button>
             <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 hover:bg-slate-700 text-slate-300">الرئيسية</a>
         </div>
@@ -129,28 +152,8 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
-            <!-- العمود الأيمن: التحكم والقرعة وساعة التوقيت -->
+            <!-- العمود الأيمن: التحكم والقرعة -->
             <div class="lg:col-span-4 flex flex-col gap-3">
-                
-                <!-- أداة ساعة التوقيت والتنبيه -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-3.5 shadow-md flex flex-col gap-2.5">
-                    <div class="flex justify-between items-center border-b border-slate-700 pb-1.5">
-                        <span class="text-xs font-black text-amber-400">⏱️ مؤقت الحصة والنشاط</span>
-                        <span id="timer-display" class="text-lg font-black text-sky-300 font-mono">00:00</span>
-                    </div>
-                    <div class="grid grid-cols-4 gap-1 text-[11px] font-black">
-                        <button onclick="startTimer(1)" class="py-1 bg-slate-900 border border-slate-600 hover:border-amber-400 rounded-lg text-amber-300">1 د</button>
-                        <button onclick="startTimer(2)" class="py-1 bg-slate-900 border border-slate-600 hover:border-amber-400 rounded-lg text-amber-300">2 د</button>
-                        <button onclick="startTimer(3)" class="py-1 bg-slate-900 border border-slate-600 hover:border-amber-400 rounded-lg text-amber-300">3 د</button>
-                        <button onclick="startTimer(4)" class="py-1 bg-slate-900 border border-slate-600 hover:border-amber-400 rounded-lg text-amber-300">4 د</button>
-                    </div>
-                    <div class="flex gap-1">
-                        <button onclick="stopTimer()" class="flex-grow py-1 bg-red-600/80 hover:bg-red-500 text-white rounded-lg text-xs font-bold">إيقاف</button>
-                        <button onclick="resetTimer()" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-xs font-bold">تصفير</button>
-                    </div>
-                </div>
-
-                <!-- صندوق القرعة والنجوم -->
                 <div class="bg-slate-800 border border-slate-700 rounded-2xl p-3.5 flex flex-col gap-2.5 shadow-md">
                     <div class="grid grid-cols-2 gap-2">
                         <div>
@@ -206,10 +209,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- العمود الأيسر: قائمة الطلاب مع الطي والزوم -->
+            <!-- العمود الأيسر: قائمة الطلاب -->
             <div class="lg:col-span-8 bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-col shadow-md">
                 
                 <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-700">
@@ -238,6 +240,39 @@
 
         </div>
     </main>
+
+    <!-- نافذة ساعة الإيقاف التفاعلية الكبيرة القابلة للتحريك (Floating Draggable Modal) -->
+    <div id="floating-timer-modal" class="hidden w-80 md:w-96 bg-slate-900/95 border-2 border-amber-500 rounded-3xl shadow-2xl backdrop-blur-lg flex-col overflow-hidden text-center">
+        <!-- شريط السحب والتحريك العلوي -->
+        <div id="timer-drag-header" class="bg-gradient-to-r from-amber-500 to-amber-600 p-3 text-slate-950 flex justify-between items-center font-black text-xs">
+            <span class="flex items-center gap-1.5">⏱️ مؤقت النشاط التفاعلي (اسحب للتحريك)</span>
+            <button id="close-timer-btn" class="w-6 h-6 rounded-full bg-slate-950/20 hover:bg-slate-950/40 text-slate-950 font-black text-xs flex items-center justify-center">✕</button>
+        </div>
+
+        <div class="p-5 flex flex-col gap-4">
+            <!-- الشاشة الرقمية الضخمة -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl py-4 shadow-inner">
+                <div id="big-timer-display" class="text-5xl md:text-6xl font-black text-amber-400 font-mono tracking-wider">00:00</div>
+                <div id="timer-status-badge" class="text-[11px] font-bold text-slate-400 mt-1">جاهز للبدء</div>
+            </div>
+
+            <!-- أزرار الضبط السريع (1 إلى 5 دقائق) -->
+            <div class="grid grid-cols-5 gap-1.5 text-xs font-black">
+                <button onclick="setTimerDuration(1)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">1 د</button>
+                <button onclick="setTimerDuration(2)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">2 د</button>
+                <button onclick="setTimerDuration(3)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">3 د</button>
+                <button onclick="setTimerDuration(4)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">4 د</button>
+                <button onclick="setTimerDuration(5)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">5 د</button>
+            </div>
+
+            <!-- أزرار التحكم والتشغيل وزيادة الدقائق -->
+            <div class="grid grid-cols-3 gap-2">
+                <button id="timer-toggle-btn" onclick="toggleTimerRunning()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow">تشغيل ▶</button>
+                <button onclick="addMinuteToTimer(1)" class="py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-black text-xs rounded-xl shadow">+1 دقيقة</button>
+                <button onclick="resetTimerFull()" class="py-2.5 bg-slate-800 hover:bg-red-700 text-slate-300 hover:text-white font-black text-xs rounded-xl border border-slate-700">تصفير ↺</button>
+            </div>
+        </div>
+    </div>
 
     <!-- تذييل الصفحة الرسمي -->
     <footer class="mt-auto bg-slate-900 border-t border-slate-800 py-3 px-4 text-center text-xs font-bold text-slate-400 no-print">
@@ -479,7 +514,7 @@
             "سادس ابتدائي 2": ["احمد مهدي احمد احمد", "آدم على عبدالله عبد النبي", "السيد على حسين جعفر على شرف", "السيد يوسف احمد على الموسوي", "أمير مالك حبيب التوبلي", "جاسم محمد حميد السباع", "جواد جاسم جواد عبدالله", "حامد يوسف احمد يحيى", "حبيب حسین میرزا اسماعیل", "حسین عباس عبدالله مرهون", "حسين على احمد عيسى", "حسين على حسن طاهر", "حيدر عبد الحسين احمد على", "رضا على مهدي على", "رضا میرزا خلف شعبان", "عباس احمد محسن العلواني", "عبدالله حميد عبد الرسول احمد", "على حسن جاسم حسن", "على عبد العزيز عبد الكريم الشيخ حسن", "على عبد الكريم على محمد", "على فاضل على العريبي", "كرار حسین احمد حسین", "ماجد يوسف احمد يحيى", "محمد احمد حسن احمد", "محمد عبد على سعيد الغنامي", "مهدي جواد احمد مليح"],
             "سادس ابتدائي 3": ["السيد أحمد قاسم ابراهیم هاشم", "السيد حيدر نزار نوري العرادي", "السيد طه جلال ابراهيم شرف", "السيد فارس رضا باقر شرف", "السيد يوسف حسن حيدر علوي", "إلياس يونس خليل محمد", "حسن على عبد المحسن المدحوب", "حسن فيصل على مدن", "حسين حسن على موسى", "حسین عباس عبدالله احمد", "حسين عبد الرضا عبدالحسین املیح", "حسين على جعفر الكوفي", "حسين على عبد المحسن المدحوب", "حسین محمود محمد مرهون", "حيدر عبدالله میرزا على", "حیدره غسان احمد متروك", "سيد محمد السيد جعفر على الموسوي", "عبدالله سعيد عبدالله القيدوم", "على جعفر عبدالله احمد", "محمد احمد عبدالله عبدالعظيم", "محمد احمد محمد الاسكافي", "محمد جميل منصور العصفور", "محمد هاني عمار خميس", "منتظر احمد معتوق مطر", "منصور حسين على على", "مهدي جميل حميد السباع", "يس محمد عبدالله فردان"],
             "أول إعدادي 1": ["احمد مازن احمد ابوطاهر", "السيد حسن جعفر علوي العلوي", "السيد حيدر از هر جعفر الغنی", "السيد عدنان ضياء عدنان عبد الصمد", "السيد هاشم طاهر محمد الموسوي", "جاسم عبد الجليل سعيد جاسم", "جواد جعفر زكريا رحمه", "حبيب جاسم على حسن", "حسن صلاح عبد على عبد الاثنا عشر", "حسن على احمد عبدالله", "حسن محمد محمد صالح الربيعي", "حسين على احمد فضل", "حسين فاضل عيسى خميس", "حيدر محمد فتيل عبدالله", "رضا حسین عبدالله قادر", "رضا نادر ميرزا العرادي", "عباس احمد عاشور حسن", "عبدالله عادل احمد الاسكافي", "عدنان عادل عبدالله عبدالله", "على حسن محمود طراده", "على حسين جاسم البقالي", "على سعيد منصور عبدالحی", "على صلاح عبد على عبد الاثنا عشر", "على عادل جاسم عتيق", "على عبد الامير محسن عبدالله", "على محمود احمد سلمان", "على مهدي على خلف", "عمران صادق احمد کاظم", "فاضل عباس عبدالله احمد", "محمد عبد الرضا عبد الحسين حسن", "هانی عبدالله عبد الجبار محسن", "يوسف احمد عبد اللطيف محمد", "يوسف احمد عبدالوهاب شعبان", "يوسف ناصر سالم عبدالنبی"],
-            "أول إعدادي 2": ["احمد جاسم محمد داود", "أحمد حسن شعبان فرحان", "احمد حسن كاظم العويناتي", "السيد إبراهيم محمد عدنان البلادي", "السيد على هادي ابراهيم علوي", "السيد هاشم عبدالهادي هاشم ناصر", "أمير حسن على محمد", "حسن سهيل حبيب سلمان", "حسن مصطفى على العلى", "حسين احمد زكريا يوسف رحمه", "حسین حسن منصور جاسم", "حسين حكيم عبد الرسول المختار", "حسين فاضل على عبدالله", "حسين يونس جاسم الاسكافي", "حيدر شاكر محمد محمد", "رضا حسن خليل فخر", "سجاد عبد الامير على الصفار", "سید مجتبی قاسم سعيد يوسف", "صادق جعفر عبد النبي السطيح", "عباس محمود عباس موسی", "عبدالله على محسن سيف", "على عبد الغني عبد الحسین املیح", "على فاضل عبد على حسن", "على محمد ابراهيم ال طوق", "على محمود عبدالله المدحوب", "فراس عبدالله عيسى النكاس", "قاسم محمود ماشاء الله حاجی", "لؤي حسين محمد امین ابراهیم", "مجتبی حسین میرزا احمد", "محمود محمد سلمان التل", "مهدي هاني حبيب عبدالله", "ناصر حسین ناصر عبدالله", "يعقوب يوسف طاهر مهدي", "يوسف احمد زكريا يوسف رحمه", "يوسف محمود خليل مرهون"],
+            "أول إعدادي 2": ["احمد جاسم محمد داود", "أحمد حسن شعبان فرحان", "احمد حسن كاظم العويناتي", "السيد إبراهيم محمد عدنان البلادي", "السيد على هادي ابراهيم علوي", "السيد هاشم عبدالهادي هاشم ناصر", "أمير حسن على محمد", "حسن سهيل حبيب سلمان", "حسن مصطفى على العلى", "حسين احمد زكريا يوسف رحمه", "حسین حسن منصور جاسم", "حسين حكيم عبد الرسول المختار", "حسين فاضل على عبدالله", "حسين يونس جاسم الاسكافي", "حيدر شاكر محمد محمد", "رضا حسن خليل فخر", "سجاد عبد الامير على الصفار", "سید مجتبى قاسم سعيد يوسف", "صادق جعفر عبد النبي السطيح", "عباس محمود عباس موسی", "عبدالله على محسن سيف", "على عبد الغني عبد الحسین املیح", "على فاضل عبد على حسن", "على محمد ابراهيم ال طوق", "على محمود عبدالله المدحوب", "فراس عبدالله عيسى النكاس", "قاسم محمود ماشاء الله حاجی", "لؤي حسين محمد امین ابراهیم", "مجتبى حسين میرزا احمد", "محمود محمد سلمان التل", "مهدي هاني حبيب عبدالله", "ناصر حسین ناصر عبدالله", "يعقوب يوسف طاهر مهدي", "يوسف احمد زكريا يوسف رحمه", "يوسف محمود خليل مرهون"],
             "أول إعدادي 3": ["احمد حسن عبد العزيز آل قنبر", "أحمد عبدالله احمد على", "السيد احمد على شرف محفوظ", "السيد عمار هادي ابراهيم هاشم", "السيد محمد حسين يوسف احمد", "السيد حسن جابر عدنان عبد الصمد", "السيد صادق احمد صادق العبار", "الياس على عباس قنديل", "جواد عيسى جواد حسن", "حاتم حسين على احمد", "حسین امین حبيب جمعه", "حسین صادق عبدالله متروك", "حسين على حسن الشجار", "حسين هاني على درويش", "حيدر قاسم احمد الخياط", "رضا محمد حسن حسن", "سجاد بدر جاسم جاسم", "سجاد محمد جعفر الدبه", "سلمان علی سلمان سلمان", "سلمان ناجی سلمان سلمان", "علاء عبدالله على على", "على حبيب عبد الرسول احمد", "على حسين عباس نويصر", "على حسين عبد الجبار ناصر", "على حسين ناصر دبي", "على محمود على حسن", "كرار حسین عباس موسى", "كرار عبد الحسين حمزه الاسكافي", "محمد حسين سلمان حبيب", "محمد حسين على السلاطنه", "محمد صادق محمد عبد الرسول", "محمود عباس على مهدي", "منتظر عمار عبدالله يوسف", "مهدي اياد عيسى صالح", "يوسف حسين ابراهيم حسن"],
             "أول إعدادي 4": ["أحمد حسين احمد مشيمع", "السيد محمد جعفر عباس علوي", "السيد حسين فاضل على الموسوي", "السيد حيدر محمد عباس عبدالنبی", "حسن على حسن عبد الرسول", "حسن محمد علی حسن", "حسین جعفر حسن حسن", "حسين على عاشور ضبعان", "حيدر حسين على الاسود", "داود محمد داود مشيمع", "رضا حسن احمد حميده", "رضا على موسى كاظم", "سلمان محمد سلمان طريف", "سید عباس امجد فاضل العلوي", "صالح عبد الغني صالح الحداد", "عباس على ابراهيم الونه", "عبد العزيز ایمن میرزا احمد", "عبدالله احمد عبد الجليل احمد", "على حمد اسماعيل بدر", "على خليل ابراهيم ابراهيم", "على صادق اسماعيل حبيب", "على محمد جمعه عاشوري", "على ناصر ملا حسن زين الدين", "على هاني احمد العصار", "عيسى حسن احمد شمطوط", "كرار على ابراهيم الونه", "محمد حسن على على", "محمد عمران ميرزا السطيح", "محمد فاضل عبد الحسين الادرج", "محمد هانی جمعه طريف", "محمد باقر شاكر عبدالله خميس", "محمد هادي حسين على محمد", "مهدي احمد ابراهيم نوار", "يوسف على احمد العصار"],
             "ثاني إعدادي 1": ["أحمد على حبيب كاظم", "أحمد محمد ميرزا التيتون", "إدريس عبدالعزيز احمد عبدالنبي", "آدم فاضل عباس حسين", "آدم نوح محمد المشخص", "السيد جعفر ضياء عدنان عبدالصمد", "السيد حسين ميثم سعيد ماجد", "السيد صادق جعفر علوي العلوي", "السيد محمد حسين حمزه على", "جاسم محمد جواد مكي", "حسن جعفر حسن حسن", "حسن على محسن التيتون", "حسين شريف اسماعيل اسماعيل", "حسين عبدالنبي ناصر دبي", "حسين عقيل عباس زبيل", "حسين على عبدالحسين حسن", "حسين محمد حبيب غريب", "حيدر سعيد رضي النجاس", "رضا موسى جعفر مرهون", "صادق جعفر عبدالوهاب البصري", "عادل محمد عادل الترنج", "عباس عبدالله ابراهيم ال عميري", "على فيصل مختار محمد", "على محمود على الصفار", "على هلال على هلال", "علي يوسف سلمان الصفار", "محمد باقر حسن محمد باقر نعمه", "محمد حسن عيسى أحمد على", "محمد حسين جعفر مال الله", "منتظر حسن صالح الصيرفي"],
@@ -514,46 +549,140 @@
         let activeStudent = null;
         let isSpinning = false;
         let studentToDeduct = null;
-        let currentFontSize = 14;
+        let currentFontSize = 15;
 
+        // مطابقة وتصحيح مفاتيح الصفوف لتفادي اختلاف التسميات القديمة
+        function normalizeClass(c) {
+            if (!c) return "سادس ابتدائي 1";
+            const map = {
+                "6ب1": "سادس ابتدائي 1", "6ب2": "سادس ابتدائي 2", "6ب3": "سادس ابتدائي 3",
+                "1ع1": "أول إعدادي 1", "1ع2": "أول إعدادي 2", "1ع3": "أول إعدادي 3", "1ع4": "أول إعدادي 4",
+                "2ع1": "ثاني إعدادي 1", "2ع2": "ثاني إعدادي 2", "2ع3": "ثاني إعدادي 3", "2ع4": "ثاني إعدادي 4",
+                "3ع1": "ثالث إعدادي 1", "3ع2": "ثالث إعدادي 2", "3ع3": "ثالث إعدادي 3", "3ع4": "ثالث إعدادي 4", "3ع5": "ثالث إعدادي 5"
+            };
+            return map[c] || c;
+        }
+
+        // إعدادات الصوت ومؤقت الحصة التفاعلي
         const audioSynth = new Tone.Synth({
             oscillator: { type: "sine" },
             envelope: { attack: 0.02, decay: 0.1, sustain: 0.01, release: 0.1 }
         }).toDestination();
 
+        let timerSecondsRemaining = 0;
         let timerInterval = null;
-        let totalSecondsRemaining = 0;
+        let isTimerRunning = false;
 
-        function startTimer(minutes) {
+        function setTimerDuration(mins) {
+            timerSecondsRemaining = mins * 60;
+            updateBigTimerDisplay();
+            document.getElementById('timer-status-badge').textContent = `تم الضبط: ${mins} دقيقة`;
+        }
+
+        function addMinuteToTimer(mins) {
+            timerSecondsRemaining += mins * 60;
+            updateBigTimerDisplay();
+        }
+
+        function toggleTimerRunning() {
+            const btn = document.getElementById('timer-toggle-btn');
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                btn.textContent = "استئناف ▶";
+                btn.className = "py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow";
+                document.getElementById('timer-status-badge').textContent = "مؤقت متوقف مؤقتاً";
+            } else {
+                if (timerSecondsRemaining <= 0) timerSecondsRemaining = 60;
+                isTimerRunning = true;
+                btn.textContent = "إيقاف مؤقت ⏸";
+                btn.className = "py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl shadow";
+                document.getElementById('timer-status-badge').textContent = "العد التنازلي جارٍ...";
+                
+                timerInterval = setInterval(() => {
+                    timerSecondsRemaining--;
+                    updateBigTimerDisplay();
+                    if (timerSecondsRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        btn.textContent = "بدء من جديد ▶";
+                        btn.className = "py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow";
+                        document.getElementById('timer-status-badge').textContent = "انتهى الوقت المحدد! 🔔";
+                        playAlarmChime();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimerFull() {
             clearInterval(timerInterval);
-            totalSecondsRemaining = minutes * 60;
-            updateTimerDisplay();
-            
-            timerInterval = setInterval(() => {
-                totalSecondsRemaining--;
-                updateTimerDisplay();
-                if (totalSecondsRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    playAlarmSound();
-                }
-            }, 1000);
+            isTimerRunning = false;
+            timerSecondsRemaining = 0;
+            updateBigTimerDisplay();
+            const btn = document.getElementById('timer-toggle-btn');
+            btn.textContent = "تشغيل ▶";
+            btn.className = "py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow";
+            document.getElementById('timer-status-badge').textContent = "تم التصفير";
         }
 
-        function stopTimer() { clearInterval(timerInterval); }
-        function resetTimer() { clearInterval(timerInterval); totalSecondsRemaining = 0; updateTimerDisplay(); }
-
-        function updateTimerDisplay() {
-            const m = Math.floor(totalSecondsRemaining / 60);
-            const s = totalSecondsRemaining % 60;
-            document.getElementById('timer-display').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        function updateBigTimerDisplay() {
+            const m = Math.floor(timerSecondsRemaining / 60);
+            const s = timerSecondsRemaining % 60;
+            document.getElementById('big-timer-display').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         }
 
-        async function playAlarmSound() {
+        async function playAlarmChime() {
             try { await Tone.start(); } catch(e) {}
-            audioSynth.triggerAttackRelease("C6", "4n");
-            setTimeout(() => audioSynth.triggerAttackRelease("E6", "4n"), 300);
-            setTimeout(() => audioSynth.triggerAttackRelease("G6", "2n"), 600);
+            audioSynth.triggerAttackRelease("C5", "8n");
+            setTimeout(() => audioSynth.triggerAttackRelease("E5", "8n"), 250);
+            setTimeout(() => audioSynth.triggerAttackRelease("G5", "8n"), 500);
+            setTimeout(() => audioSynth.triggerAttackRelease("C6", "2n"), 750);
         }
+
+        // فتح وإغلاق ساعة التوقيت
+        document.getElementById('open-timer-btn').onclick = () => {
+            const modal = document.getElementById('floating-timer-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        document.getElementById('close-timer-btn').onclick = () => {
+            const modal = document.getElementById('floating-timer-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // تفعيل سحب وتحريك نافذة المؤقت بالماوس أو اللمس (Draggable)
+        (function enableTimerDrag() {
+            const modal = document.getElementById('floating-timer-modal');
+            const header = document.getElementById('timer-drag-header');
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            header.onmousedown = (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                const rect = modal.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
+                modal.style.transform = 'none';
+                modal.style.left = initialLeft + 'px';
+                modal.style.top = initialTop + 'px';
+
+                document.onmousemove = (ev) => {
+                    if (!isDragging) return;
+                    modal.style.left = (initialLeft + (ev.clientX - startX)) + 'px';
+                    modal.style.top = (initialTop + (ev.clientY - startY)) + 'px';
+                };
+
+                document.onmouseup = () => {
+                    isDragging = false;
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            };
+        })();
 
         function adjustFontSize(delta) {
             currentFontSize = Math.max(12, Math.min(26, currentFontSize + delta));
@@ -613,7 +742,6 @@
             return 'الحصة الأولى';
         }
 
-        // تعبئة قائمة المعلمين
         function populateTeachersDropdown() {
             const select = document.getElementById('cfg-teacher-select');
             select.innerHTML = '<option value="">-- اضغط هنا لاختيار اسمك من القائمة --</option>';
@@ -634,7 +762,6 @@
             };
         }
 
-        // تعبئة قائمة الصفوف الـ 16 ضماناً لظهورها فوراً
         function populateConfigClassCheckboxes() {
             const container = document.getElementById('cfg-classes-checkboxes');
             container.innerHTML = '';
@@ -654,7 +781,14 @@
             populateConfigClassCheckboxes();
             const saved = localStorage.getItem('school_teacher_profile');
             if (saved) {
-                try { teacherProfile = JSON.parse(saved); } catch(e) {}
+                try {
+                    const parsed = JSON.parse(saved);
+                    teacherProfile = {
+                        name: parsed.name,
+                        subject: parsed.subject,
+                        classes: (parsed.classes || []).map(normalizeClass)
+                    };
+                } catch(e) {}
             }
             updateTeacherProfileUI();
         }
@@ -683,6 +817,7 @@
                 summaryClassSelect.appendChild(opt2);
             });
 
+            currentClass = normalizeClass(currentClass);
             if (!teacherProfile.classes.includes(currentClass)) {
                 currentClass = teacherProfile.classes[0] || Object.keys(studentDatabase)[0];
             }
@@ -693,7 +828,7 @@
 
         document.getElementById('open-settings-btn').onclick = () => {
             populateTeachersDropdown();
-            populateConfigClassCheckboxes(); // ضمان ظهور الصفوف عند فتح النافذة
+            populateConfigClassCheckboxes();
             document.getElementById('cfg-teacher-name').value = teacherProfile.name;
             document.getElementById('cfg-subject-name').value = teacherProfile.subject;
             document.querySelectorAll('.cfg-chk').forEach(chk => {
@@ -711,7 +846,7 @@
         document.getElementById('save-settings-btn').onclick = async () => {
             const name = document.getElementById('cfg-teacher-name').value.trim();
             const subject = document.getElementById('cfg-subject-name').value.trim();
-            const selectedClasses = Array.from(document.querySelectorAll('.cfg-chk:checked')).map(c => c.value);
+            const selectedClasses = Array.from(document.querySelectorAll('.cfg-chk:checked')).map(c => normalizeClass(c.value));
 
             if (!name || !subject || selectedClasses.length === 0) {
                 alert('يرجى اختيار المعلم وتحديد صف واحد على الأقل.');
@@ -735,6 +870,7 @@
         };
 
         function loadClassData() {
+            currentClass = normalizeClass(currentClass);
             const savedStars = localStorage.getItem(`stars_${teacherProfile.name}_${currentClass}`);
             classStars = savedStars ? JSON.parse(savedStars) : {};
 
@@ -794,7 +930,7 @@
                 row.className = `student-item p-2.5 rounded-xl flex items-center justify-between ${stars > 0 ? 'has-stars' : ''} ${isChosenInThisCycle ? 'already-chosen' : ''}`;
                 row.innerHTML = `
                     <div class="flex items-center gap-2 truncate flex-grow">
-                        <span class="truncate font-black text-slate-100" style="font-size: ${currentFontSize}px;">${i + 1}. ${name}</span>
+                        <span class="student-name-text truncate" style="font-size: ${currentFontSize}px;">${i + 1}. ${name}</span>
                         ${isChosenInThisCycle ? '<span class="text-[10px] text-sky-300 font-bold bg-sky-950 px-1.5 py-0.5 rounded border border-sky-800">شارك</span>' : ''}
                     </div>
                     
@@ -979,7 +1115,7 @@
         };
 
         classSelect.onchange = (e) => {
-            currentClass = e.target.value;
+            currentClass = normalizeClass(e.target.value);
             document.getElementById('summary-class-select').value = currentClass;
             activeStudent = null;
             targetStudentName.textContent = 'اضغط للسحب';
@@ -1093,7 +1229,7 @@
         };
 
         function renderTop10Summary() {
-            const cls = document.getElementById('summary-class-select').value;
+            const cls = normalizeClass(document.getElementById('summary-class-select').value);
             const range = document.getElementById('summary-range-select').value;
             const history = getArchiveHistory();
             const now = new Date();
@@ -1102,7 +1238,7 @@
             startOfWeek.setHours(0, 0, 0, 0);
 
             const filtered = history.filter(s => {
-                if (s.className !== cls) return false;
+                if (normalizeClass(s.className) !== cls) return false;
                 if (range === 'all') return true;
                 const d = parseStandardDate(s.date);
                 if (range === 'week') return d >= startOfWeek;
@@ -1198,7 +1334,7 @@
         }
 
         document.getElementById('print-top10-btn').onclick = () => {
-            const cls = document.getElementById('summary-class-select').value;
+            const cls = normalizeClass(document.getElementById('summary-class-select').value);
             const range = document.getElementById('summary-range-select').value;
             const rangeText = range === 'week' ? 'خلال الأسبوع الحالي' : (range === 'month' ? 'خلال الشهر الحالي' : 'السجل العام');
 
