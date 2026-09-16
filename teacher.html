@@ -212,7 +212,6 @@
             <!-- العمود الأيسر: قائمة الطلاب مع الطي والزوم -->
             <div class="lg:col-span-8 bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-col shadow-md">
                 
-                <!-- شريط عنوان القائمة وأزرار الطي والزوم -->
                 <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-700">
                     <div class="flex items-center gap-2">
                         <button id="toggle-students-panel" class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-600 text-sky-400 font-black flex items-center justify-center hover:bg-slate-700 transition" title="طي / إظهار القائمة">▲</button>
@@ -221,7 +220,6 @@
                         </span>
                     </div>
 
-                    <!-- أزرار تكبير وتصغير الخط (Zoom) -->
                     <div class="flex items-center gap-1.5">
                         <span class="text-[10px] text-slate-400 font-bold">حجم الخط:</span>
                         <button onclick="adjustFontSize(-1)" class="w-6 h-6 rounded bg-slate-900 border border-slate-600 text-slate-200 font-black text-xs flex items-center justify-center hover:bg-slate-700">-</button>
@@ -229,7 +227,6 @@
                     </div>
                 </div>
 
-                <!-- الحاوية القابلة للطي -->
                 <div id="students-collapsible-wrapper" class="flex flex-col flex-grow transition-all duration-300 overflow-hidden">
                     <div class="text-[11px] text-slate-400 font-bold mb-1.5">
                         <span class="text-emerald-400 font-black">[ + ] زيادة</span> | <span class="text-red-400 font-black">[ - ] إنقاص</span> | <span class="text-amber-400 font-black">[ ⚠️ ] مخالفة</span>
@@ -275,8 +272,8 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1.5">اختر الصفوف المسندة إليك لتدريسها:</label>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 max-h-44 overflow-y-auto" id="cfg-classes-checkboxes"></div>
+                <label class="block text-xs font-bold text-slate-300 mb-1.5">اختر الصفوف المسندة إليك لتدريسها (16 صفاً):</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 max-h-48 overflow-y-auto" id="cfg-classes-checkboxes"></div>
             </div>
 
             <button id="save-settings-btn" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-black text-xs rounded-xl shadow-lg mt-1">
@@ -542,15 +539,8 @@
             }, 1000);
         }
 
-        function stopTimer() {
-            clearInterval(timerInterval);
-        }
-
-        function resetTimer() {
-            clearInterval(timerInterval);
-            totalSecondsRemaining = 0;
-            updateTimerDisplay();
-        }
+        function stopTimer() { clearInterval(timerInterval); }
+        function resetTimer() { clearInterval(timerInterval); totalSecondsRemaining = 0; updateTimerDisplay(); }
 
         function updateTimerDisplay() {
             const m = Math.floor(totalSecondsRemaining / 60);
@@ -623,6 +613,7 @@
             return 'الحصة الأولى';
         }
 
+        // تعبئة قائمة المعلمين
         function populateTeachersDropdown() {
             const select = document.getElementById('cfg-teacher-select');
             select.innerHTML = '<option value="">-- اضغط هنا لاختيار اسمك من القائمة --</option>';
@@ -643,6 +634,7 @@
             };
         }
 
+        // تعبئة قائمة الصفوف الـ 16 ضماناً لظهورها فوراً
         function populateConfigClassCheckboxes() {
             const container = document.getElementById('cfg-classes-checkboxes');
             container.innerHTML = '';
@@ -700,7 +692,8 @@
         }
 
         document.getElementById('open-settings-btn').onclick = () => {
-            populateTeachersDropdown(); // ضمان تعبئة القائمة عند الفتح
+            populateTeachersDropdown();
+            populateConfigClassCheckboxes(); // ضمان ظهور الصفوف عند فتح النافذة
             document.getElementById('cfg-teacher-name').value = teacherProfile.name;
             document.getElementById('cfg-subject-name').value = teacherProfile.subject;
             document.querySelectorAll('.cfg-chk').forEach(chk => {
