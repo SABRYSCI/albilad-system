@@ -517,9 +517,8 @@
         let activeStudent = null;
         let isSpinning = false;
         let studentToDeduct = null;
-        let currentFontSize = 14; // حجم الخط الافتراضي بالبكسل
+        let currentFontSize = 14;
 
-        // أدوات الصوت ومؤقت الحصة
         const audioSynth = new Tone.Synth({
             oscillator: { type: "sine" },
             envelope: { attack: 0.02, decay: 0.1, sustain: 0.01, release: 0.1 }
@@ -566,13 +565,11 @@
             setTimeout(() => audioSynth.triggerAttackRelease("G6", "2n"), 600);
         }
 
-        // أداة تكبير وتصغير الخط (Zoom) للأسماء
         function adjustFontSize(delta) {
             currentFontSize = Math.max(12, Math.min(26, currentFontSize + delta));
             renderStudentList();
         }
 
-        // أداة الطي العمودي (إخفاء وإظهار قائمة الطلاب)
         let isPanelCollapsed = false;
         document.getElementById('toggle-students-panel').onclick = () => {
             isPanelCollapsed = !isPanelCollapsed;
@@ -666,9 +663,6 @@
             const saved = localStorage.getItem('school_teacher_profile');
             if (saved) {
                 try { teacherProfile = JSON.parse(saved); } catch(e) {}
-            } else {
-                document.getElementById('teacher-settings-modal').classList.remove('hidden');
-                document.getElementById('teacher-settings-modal').classList.add('flex');
             }
             updateTeacherProfileUI();
         }
@@ -706,6 +700,7 @@
         }
 
         document.getElementById('open-settings-btn').onclick = () => {
+            populateTeachersDropdown(); // ضمان تعبئة القائمة عند الفتح
             document.getElementById('cfg-teacher-name').value = teacherProfile.name;
             document.getElementById('cfg-subject-name').value = teacherProfile.subject;
             document.querySelectorAll('.cfg-chk').forEach(chk => {
@@ -793,7 +788,6 @@
             }
         }
 
-        // رسم قائمة الطلاب مع تطبيق حجم الخط المحدث لضمان وضوح الأسماء تماماً
         function renderStudentList() {
             studentsContainer.innerHTML = '';
             const all = studentDatabase[currentClass] || [];
