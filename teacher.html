@@ -15,15 +15,15 @@
             --app-bg: #0f172a;
             --surface-bg: #1e293b;
             --card-bg: #334155;
-            --text-main: #ffffff;
+            --text-main: #f8fafc;
             --border-color: #475569;
             --gold: #f59e0b;
         }
 
         body.light-mode {
-            --app-bg: #f1f5f9;
+            --app-bg: #f8fafc;
             --surface-bg: #ffffff;
-            --card-bg: #e2e8f0;
+            --card-bg: #f1f5f9;
             --text-main: #0f172a;
             --border-color: #cbd5e1;
             --gold: #d97706;
@@ -39,9 +39,8 @@
         }
 
         .student-item {
-            background-color: var(--surface-bg);
+            background-color: var(--surface-bg) !important;
             border: 1.5px solid var(--border-color);
-            color: var(--text-main);
             transition: all 0.15s ease-in-out;
         }
 
@@ -52,27 +51,28 @@
 
         .student-item.has-stars {
             border-color: var(--gold);
-            background-color: rgba(245, 158, 11, 0.18);
+            background-color: rgba(245, 158, 11, 0.18) !important;
         }
 
         .student-item.already-chosen {
             opacity: 0.65;
-            background-color: rgba(15, 23, 42, 0.45);
+            background-color: rgba(15, 23, 42, 0.45) !important;
         }
 
-        .student-name-text {
+        /* تثبيت وضوح اسم الطالب بشكل قاطع */
+        .student-title-text {
             color: var(--text-main) !important;
-            font-weight: 800;
+            font-weight: 800 !important;
+            display: inline-block;
         }
 
-        /* نافذة المؤقت العائمة والقابلة للتحريك */
+        /* نافذة المؤقت العائمة القابلة للتحريك */
         #floating-timer-modal {
             position: fixed;
-            top: 15%;
+            top: 20%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
-            cursor: default;
         }
         #timer-drag-header {
             cursor: move;
@@ -115,7 +115,6 @@
         </div>
 
         <div class="flex items-center gap-2">
-            <!-- زر فتح ساعة الإيقاف المميزة -->
             <button id="open-timer-btn" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow flex items-center gap-1 transition active:scale-95">
                 ⏱️ ساعة النشاط
             </button>
@@ -179,7 +178,7 @@
                     </button>
 
                     <div class="flex justify-between items-center px-1 text-[11px] text-slate-400 font-bold">
-                        <span>المتبقي بدورة السحب: <span id="pool-remaining" class="text-sky-400">0</span></span>
+                        <span>المتبقي بدورة السحب: <span id="pool-remaining" class="text-sky-400 font-black">0</span></span>
                         <span id="pool-status" class="text-amber-400 text-[10px]"></span>
                     </div>
 
@@ -218,7 +217,7 @@
                     <div class="flex items-center gap-2">
                         <button id="toggle-students-panel" class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-600 text-sky-400 font-black flex items-center justify-center hover:bg-slate-700 transition" title="طي / إظهار القائمة">▲</button>
                         <span class="text-xs md:text-sm font-black text-slate-200">
-                            قائمة الطلاب (<span id="total-count" class="text-amber-400">0</span>)
+                            قائمة الطلاب (<span id="total-count" class="text-amber-400 font-black">0</span>)
                         </span>
                     </div>
 
@@ -241,22 +240,19 @@
         </div>
     </main>
 
-    <!-- نافذة ساعة الإيقاف التفاعلية الكبيرة القابلة للتحريك (Floating Draggable Modal) -->
+    <!-- نافذة ساعة الإيقاف التفاعلية القابلة للتحريك والسحب -->
     <div id="floating-timer-modal" class="hidden w-80 md:w-96 bg-slate-900/95 border-2 border-amber-500 rounded-3xl shadow-2xl backdrop-blur-lg flex-col overflow-hidden text-center">
-        <!-- شريط السحب والتحريك العلوي -->
         <div id="timer-drag-header" class="bg-gradient-to-r from-amber-500 to-amber-600 p-3 text-slate-950 flex justify-between items-center font-black text-xs">
             <span class="flex items-center gap-1.5">⏱️ مؤقت النشاط التفاعلي (اسحب للتحريك)</span>
             <button id="close-timer-btn" class="w-6 h-6 rounded-full bg-slate-950/20 hover:bg-slate-950/40 text-slate-950 font-black text-xs flex items-center justify-center">✕</button>
         </div>
 
         <div class="p-5 flex flex-col gap-4">
-            <!-- الشاشة الرقمية الضخمة -->
             <div class="bg-slate-950 border border-slate-800 rounded-2xl py-4 shadow-inner">
                 <div id="big-timer-display" class="text-5xl md:text-6xl font-black text-amber-400 font-mono tracking-wider">00:00</div>
                 <div id="timer-status-badge" class="text-[11px] font-bold text-slate-400 mt-1">جاهز للبدء</div>
             </div>
 
-            <!-- أزرار الضبط السريع (1 إلى 5 دقائق) -->
             <div class="grid grid-cols-5 gap-1.5 text-xs font-black">
                 <button onclick="setTimerDuration(1)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">1 د</button>
                 <button onclick="setTimerDuration(2)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">2 د</button>
@@ -265,7 +261,6 @@
                 <button onclick="setTimerDuration(5)" class="py-1.5 bg-slate-800 border border-slate-700 hover:border-amber-400 rounded-xl text-sky-300">5 د</button>
             </div>
 
-            <!-- أزرار التحكم والتشغيل وزيادة الدقائق -->
             <div class="grid grid-cols-3 gap-2">
                 <button id="timer-toggle-btn" onclick="toggleTimerRunning()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow">تشغيل ▶</button>
                 <button onclick="addMinuteToTimer(1)" class="py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-black text-xs rounded-xl shadow">+1 دقيقة</button>
@@ -512,7 +507,7 @@
         const studentDatabase = {
             "سادس ابتدائي 1": ["ابراهيم على خليل الحايكي", "السيد حسن صالح الموسوي", "السيد علوي ابراهيم ناصر حسن", "السيد هاشم مجيد فيصل محمد", "إيليا سعيد حسن حسن", "حسن على ميرزا خليل", "حسین اسامه عبد الجليل الجشي", "حسين عمار جاسم الاسكافي", "حيدر على ابراهيم حسن", "سيد صادق جعفر على ناصر", "سيد حامد حسین محمد درویش", "صادق على عبدالله اسماعيل", "عبد العزيز جلال عبد العزيز حاجی عبدالله", "عبدالله حسین عبدالله مال الله", "عبدالله على عباس شاهين", "على حسين على عبد على", "على عيسى ابراهيم الستراوي", "على قاسم عباس حسن", "عمار محمد عبد الامير الحصار", "غسان مهند عقيل مرهون", "قاسم جابر جاسم منصور", "قاسم محمد احمد حسن", "ليث محمود مسعود الوطني", "محمد صالح شوقي البناء", "محمد عباس خميس السودان", "نوح زهير عبد الوهاب غزوان", "يوسف كاظم محمد الحايكي"],
             "سادس ابتدائي 2": ["احمد مهدي احمد احمد", "آدم على عبدالله عبد النبي", "السيد على حسين جعفر على شرف", "السيد يوسف احمد على الموسوي", "أمير مالك حبيب التوبلي", "جاسم محمد حميد السباع", "جواد جاسم جواد عبدالله", "حامد يوسف احمد يحيى", "حبيب حسین میرزا اسماعیل", "حسین عباس عبدالله مرهون", "حسين على احمد عيسى", "حسين على حسن طاهر", "حيدر عبد الحسين احمد على", "رضا على مهدي على", "رضا میرزا خلف شعبان", "عباس احمد محسن العلواني", "عبدالله حميد عبد الرسول احمد", "على حسن جاسم حسن", "على عبد العزيز عبد الكريم الشيخ حسن", "على عبد الكريم على محمد", "على فاضل على العريبي", "كرار حسین احمد حسین", "ماجد يوسف احمد يحيى", "محمد احمد حسن احمد", "محمد عبد على سعيد الغنامي", "مهدي جواد احمد مليح"],
-            "سادس ابتدائي 3": ["السيد أحمد قاسم ابراهیم هاشم", "السيد حيدر نزار نوري العرادي", "السيد طه جلال ابراهيم شرف", "السيد فارس رضا باقر شرف", "السيد يوسف حسن حيدر علوي", "إلياس يونس خليل محمد", "حسن على عبد المحسن المدحوب", "حسن فيصل على مدن", "حسين حسن على موسى", "حسین عباس عبدالله احمد", "حسين عبد الرضا عبدالحسین املیح", "حسين على جعفر الكوفي", "حسين على عبد المحسن المدحوب", "حسین محمود محمد مرهون", "حيدر عبدالله میرزا على", "حیدره غسان احمد متروك", "سيد محمد السيد جعفر على الموسوي", "عبدالله سعيد عبدالله القيدوم", "على جعفر عبدالله احمد", "محمد احمد عبدالله عبدالعظيم", "محمد احمد محمد الاسكافي", "محمد جميل منصور العصفور", "محمد هاني عمار خميس", "منتظر احمد معتوق مطر", "منصور حسين على على", "مهدي جميل حميد السباع", "يس محمد عبدالله فردان"],
+            "سادس ابتدائي 3": ["السيد أحمد قاسم ابراهیم هاشم", "السيد حيدر نزار نوري العرادي", "السيد طه جلال ابراهيم شرف", "السيد فارس رضا باقر شرف", "السيد يوسف حسن حيدر علوي", "إلياس يونس خليل محمد", "حسن على عبد المحسن المدحوب", "حسن فيصل على مدن", "حسين حسن على موسى", "حسین عباس عبدالله احمد", "حسين عبد الرضا عبدالحسین املیح", "حسين على جعفر الكوفي", "حسين على عبد المحسن المدحوب", "حسین محمود محمد مرهون", "حيدر عبدالله میرزا على", "حيدره غسان احمد متروك", "سيد محمد السيد جعفر على الموسوي", "عبدالله سعيد عبدالله القيدوم", "على جعفر عبدالله احمد", "محمد احمد عبدالله عبدالعظيم", "محمد احمد محمد الاسكافي", "محمد جميل منصور العصفور", "محمد هاني عمار خميس", "منتظر احمد معتوق مطر", "منصور حسين على على", "مهدي جميل حميد السباع", "يس محمد عبدالله فردان"],
             "أول إعدادي 1": ["احمد مازن احمد ابوطاهر", "السيد حسن جعفر علوي العلوي", "السيد حيدر از هر جعفر الغنی", "السيد عدنان ضياء عدنان عبد الصمد", "السيد هاشم طاهر محمد الموسوي", "جاسم عبد الجليل سعيد جاسم", "جواد جعفر زكريا رحمه", "حبيب جاسم على حسن", "حسن صلاح عبد على عبد الاثنا عشر", "حسن على احمد عبدالله", "حسن محمد محمد صالح الربيعي", "حسين على احمد فضل", "حسين فاضل عيسى خميس", "حيدر محمد فتيل عبدالله", "رضا حسین عبدالله قادر", "رضا نادر ميرزا العرادي", "عباس احمد عاشور حسن", "عبدالله عادل احمد الاسكافي", "عدنان عادل عبدالله عبدالله", "على حسن محمود طراده", "على حسين جاسم البقالي", "على سعيد منصور عبدالحی", "على صلاح عبد على عبد الاثنا عشر", "على عادل جاسم عتيق", "على عبد الامير محسن عبدالله", "على محمود احمد سلمان", "على مهدي على خلف", "عمران صادق احمد کاظم", "فاضل عباس عبدالله احمد", "محمد عبد الرضا عبد الحسين حسن", "هانی عبدالله عبد الجبار محسن", "يوسف احمد عبد اللطيف محمد", "يوسف احمد عبدالوهاب شعبان", "يوسف ناصر سالم عبدالنبی"],
             "أول إعدادي 2": ["احمد جاسم محمد داود", "أحمد حسن شعبان فرحان", "احمد حسن كاظم العويناتي", "السيد إبراهيم محمد عدنان البلادي", "السيد على هادي ابراهيم علوي", "السيد هاشم عبدالهادي هاشم ناصر", "أمير حسن على محمد", "حسن سهيل حبيب سلمان", "حسن مصطفى على العلى", "حسين احمد زكريا يوسف رحمه", "حسین حسن منصور جاسم", "حسين حكيم عبد الرسول المختار", "حسين فاضل على عبدالله", "حسين يونس جاسم الاسكافي", "حيدر شاكر محمد محمد", "رضا حسن خليل فخر", "سجاد عبد الامير على الصفار", "سید مجتبى قاسم سعيد يوسف", "صادق جعفر عبد النبي السطيح", "عباس محمود عباس موسی", "عبدالله على محسن سيف", "على عبد الغني عبد الحسین املیح", "على فاضل عبد على حسن", "على محمد ابراهيم ال طوق", "على محمود عبدالله المدحوب", "فراس عبدالله عيسى النكاس", "قاسم محمود ماشاء الله حاجی", "لؤي حسين محمد امین ابراهیم", "مجتبى حسين میرزا احمد", "محمود محمد سلمان التل", "مهدي هاني حبيب عبدالله", "ناصر حسین ناصر عبدالله", "يعقوب يوسف طاهر مهدي", "يوسف احمد زكريا يوسف رحمه", "يوسف محمود خليل مرهون"],
             "أول إعدادي 3": ["احمد حسن عبد العزيز آل قنبر", "أحمد عبدالله احمد على", "السيد احمد على شرف محفوظ", "السيد عمار هادي ابراهيم هاشم", "السيد محمد حسين يوسف احمد", "السيد حسن جابر عدنان عبد الصمد", "السيد صادق احمد صادق العبار", "الياس على عباس قنديل", "جواد عيسى جواد حسن", "حاتم حسين على احمد", "حسین امین حبيب جمعه", "حسین صادق عبدالله متروك", "حسين على حسن الشجار", "حسين هاني على درويش", "حيدر قاسم احمد الخياط", "رضا محمد حسن حسن", "سجاد بدر جاسم جاسم", "سجاد محمد جعفر الدبه", "سلمان علی سلمان سلمان", "سلمان ناجی سلمان سلمان", "علاء عبدالله على على", "على حبيب عبد الرسول احمد", "على حسين عباس نويصر", "على حسين عبد الجبار ناصر", "على حسين ناصر دبي", "على محمود على حسن", "كرار حسین عباس موسى", "كرار عبد الحسين حمزه الاسكافي", "محمد حسين سلمان حبيب", "محمد حسين على السلاطنه", "محمد صادق محمد عبد الرسول", "محمود عباس على مهدي", "منتظر عمار عبدالله يوسف", "مهدي اياد عيسى صالح", "يوسف حسين ابراهيم حسن"],
@@ -551,16 +546,48 @@
         let studentToDeduct = null;
         let currentFontSize = 15;
 
-        // مطابقة وتصحيح مفاتيح الصفوف لتفادي اختلاف التسميات القديمة
-        function normalizeClass(c) {
-            if (!c) return "سادس ابتدائي 1";
-            const map = {
-                "6ب1": "سادس ابتدائي 1", "6ب2": "سادس ابتدائي 2", "6ب3": "سادس ابتدائي 3",
-                "1ع1": "أول إعدادي 1", "1ع2": "أول إعدادي 2", "1ع3": "أول إعدادي 3", "1ع4": "أول إعدادي 4",
-                "2ع1": "ثاني إعدادي 1", "2ع2": "ثاني إعدادي 2", "2ع3": "ثاني إعدادي 3", "2ع4": "ثاني إعدادي 4",
-                "3ع1": "ثالث إعدادي 1", "3ع2": "ثالث إعدادي 2", "3ع3": "ثالث إعدادي 3", "3ع4": "ثالث إعدادي 4", "3ع5": "ثالث إعدادي 5"
+        // دالة حل مشكلة أسماء ومفاتيح الصفوف بدقة متناهية
+        function resolveClassKey(str) {
+            if (!str) return "سادس ابتدائي 1";
+            let s = String(str).trim();
+            if (studentDatabase[s]) return s;
+
+            // خريطة التحويل لكافة الصيغ الممكنة
+            const aliasMap = {
+                "سادس ابتدائي": "سادس ابتدائي 1",
+                "سادس 1": "سادس ابتدائي 1",
+                "6ب1": "سادس ابتدائي 1",
+                "6ب2": "سادس ابتدائي 2",
+                "6ب3": "سادس ابتدائي 3",
+                "أول إعدادي": "أول إعدادي 1",
+                "اول اعدادي": "أول إعدادي 1",
+                "1ع1": "أول إعدادي 1",
+                "1ع2": "أول إعدادي 2",
+                "1ع3": "أول إعدادي 3",
+                "1ع4": "أول إعدادي 4",
+                "ثاني إعدادي": "ثاني إعدادي 1",
+                "ثاني اعدادي": "ثاني إعدادي 1",
+                "2ع1": "ثاني إعدادي 1",
+                "2ع2": "ثاني إعدادي 2",
+                "2ع3": "ثاني إعدادي 3",
+                "2ع4": "ثاني إعدادي 4",
+                "ثالث إعدادي": "ثالث إعدادي 1",
+                "ثالث اعدادي": "ثالث إعدادي 1",
+                "3ع1": "ثالث إعدادي 1",
+                "3ع2": "ثالث إعدادي 2",
+                "3ع3": "ثالث إعدادي 3",
+                "3ع4": "ثالث إعدادي 4",
+                "3ع5": "ثالث إعدادي 5"
             };
-            return map[c] || c;
+
+            if (aliasMap[s]) return aliasMap[s];
+
+            // بحث تقريبي في مفاتيح قاعدة البيانات
+            for (let key in studentDatabase) {
+                if (key.includes(s) || s.includes(key)) return key;
+            }
+
+            return Object.keys(studentDatabase)[0];
         }
 
         // إعدادات الصوت ومؤقت الحصة التفاعلي
@@ -639,7 +666,6 @@
             setTimeout(() => audioSynth.triggerAttackRelease("C6", "2n"), 750);
         }
 
-        // فتح وإغلاق ساعة التوقيت
         document.getElementById('open-timer-btn').onclick = () => {
             const modal = document.getElementById('floating-timer-modal');
             modal.classList.remove('hidden');
@@ -652,7 +678,7 @@
             modal.classList.remove('flex');
         };
 
-        // تفعيل سحب وتحريك نافذة المؤقت بالماوس أو اللمس (Draggable)
+        // تحريك نافذة المؤقت بالماوس
         (function enableTimerDrag() {
             const modal = document.getElementById('floating-timer-modal');
             const header = document.getElementById('timer-drag-header');
@@ -786,7 +812,7 @@
                     teacherProfile = {
                         name: parsed.name,
                         subject: parsed.subject,
-                        classes: (parsed.classes || []).map(normalizeClass)
+                        classes: (parsed.classes || []).map(resolveClassKey)
                     };
                 } catch(e) {}
             }
@@ -817,7 +843,7 @@
                 summaryClassSelect.appendChild(opt2);
             });
 
-            currentClass = normalizeClass(currentClass);
+            currentClass = resolveClassKey(classSelect.value || currentClass);
             if (!teacherProfile.classes.includes(currentClass)) {
                 currentClass = teacherProfile.classes[0] || Object.keys(studentDatabase)[0];
             }
@@ -832,7 +858,7 @@
             document.getElementById('cfg-teacher-name').value = teacherProfile.name;
             document.getElementById('cfg-subject-name').value = teacherProfile.subject;
             document.querySelectorAll('.cfg-chk').forEach(chk => {
-                chk.checked = teacherProfile.classes.includes(chk.value);
+                chk.checked = teacherProfile.classes.includes(resolveClassKey(chk.value));
             });
             document.getElementById('teacher-settings-modal').classList.remove('hidden');
             document.getElementById('teacher-settings-modal').classList.add('flex');
@@ -846,7 +872,7 @@
         document.getElementById('save-settings-btn').onclick = async () => {
             const name = document.getElementById('cfg-teacher-name').value.trim();
             const subject = document.getElementById('cfg-subject-name').value.trim();
-            const selectedClasses = Array.from(document.querySelectorAll('.cfg-chk:checked')).map(c => normalizeClass(c.value));
+            const selectedClasses = Array.from(document.querySelectorAll('.cfg-chk:checked')).map(c => resolveClassKey(c.value));
 
             if (!name || !subject || selectedClasses.length === 0) {
                 alert('يرجى اختيار المعلم وتحديد صف واحد على الأقل.');
@@ -870,7 +896,7 @@
         };
 
         function loadClassData() {
-            currentClass = normalizeClass(currentClass);
+            currentClass = resolveClassKey(currentClass);
             const savedStars = localStorage.getItem(`stars_${teacherProfile.name}_${currentClass}`);
             classStars = savedStars ? JSON.parse(savedStars) : {};
 
@@ -930,7 +956,7 @@
                 row.className = `student-item p-2.5 rounded-xl flex items-center justify-between ${stars > 0 ? 'has-stars' : ''} ${isChosenInThisCycle ? 'already-chosen' : ''}`;
                 row.innerHTML = `
                     <div class="flex items-center gap-2 truncate flex-grow">
-                        <span class="student-name-text truncate" style="font-size: ${currentFontSize}px;">${i + 1}. ${name}</span>
+                        <span class="student-title-text truncate text-slate-100" style="font-size: ${currentFontSize}px;">${i + 1}. ${name}</span>
                         ${isChosenInThisCycle ? '<span class="text-[10px] text-sky-300 font-bold bg-sky-950 px-1.5 py-0.5 rounded border border-sky-800">شارك</span>' : ''}
                     </div>
                     
@@ -1115,7 +1141,7 @@
         };
 
         classSelect.onchange = (e) => {
-            currentClass = normalizeClass(e.target.value);
+            currentClass = resolveClassKey(e.target.value);
             document.getElementById('summary-class-select').value = currentClass;
             activeStudent = null;
             targetStudentName.textContent = 'اضغط للسحب';
@@ -1229,7 +1255,7 @@
         };
 
         function renderTop10Summary() {
-            const cls = normalizeClass(document.getElementById('summary-class-select').value);
+            const cls = resolveClassKey(document.getElementById('summary-class-select').value);
             const range = document.getElementById('summary-range-select').value;
             const history = getArchiveHistory();
             const now = new Date();
@@ -1238,7 +1264,7 @@
             startOfWeek.setHours(0, 0, 0, 0);
 
             const filtered = history.filter(s => {
-                if (normalizeClass(s.className) !== cls) return false;
+                if (resolveClassKey(s.className) !== cls) return false;
                 if (range === 'all') return true;
                 const d = parseStandardDate(s.date);
                 if (range === 'week') return d >= startOfWeek;
@@ -1334,7 +1360,7 @@
         }
 
         document.getElementById('print-top10-btn').onclick = () => {
-            const cls = normalizeClass(document.getElementById('summary-class-select').value);
+            const cls = resolveClassKey(document.getElementById('summary-class-select').value);
             const range = document.getElementById('summary-range-select').value;
             const rangeText = range === 'week' ? 'خلال الأسبوع الحالي' : (range === 'month' ? 'خلال الشهر الحالي' : 'السجل العام');
 
