@@ -3,385 +3,680 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة المشرف الإداري - مدرسة البلاد القديم</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>بوابة المشرفين - تقرير ومطابقة الحضور والغياب</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
 
         :root {
-            --app-bg: #0f172a;
-            --surface-bg: #1e293b;
-            --card-bg: #334155;
-            --text-color: #f8fafc;
-            --border-color: #475569;
-        }
-
-        body.light-mode {
-            --app-bg: #f8fafc;
-            --surface-bg: #ffffff;
-            --card-bg: #f1f5f9;
-            --text-color: #0f172a;
-            --border-color: #cbd5e1;
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #ca8a04;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --border: #e2e8f0;
         }
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: var(--app-bg);
-            color: var(--text-color);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
             margin: 0;
-            padding: 0;
-            min-height: 100vh;
+            padding: 20px 10px;
         }
 
-        @media print {
-            @page { size: A4 portrait; margin: 0.7cm; }
-            body { background: white !important; color: black !important; }
-            .no-print { display: none !important; }
-            .print-area { display: block !important; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            overflow: hidden;
         }
-        .print-area { display: none; }
+
+        .school-header-container {
+            text-align: center;
+            padding: 15px 15px 5px 15px;
+            border-bottom: 3px solid var(--primary);
+            background: #fff;
+        }
+        .school-header {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+        }
+
+        /* شاشة تسجيل الدخول */
+        .auth-box {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            text-align: center;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .auth-box h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-weight: 800;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin: 15px 0;
+        }
+        .btn-main {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-main:hover { background-color: #172554; }
+
+        /* التبويبات */
+        .tabs-nav {
+            display: flex;
+            background-color: #f1f5f9;
+            border-bottom: 2px solid var(--border);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.3s;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            background: #fff;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .content-area {
+            padding: 25px;
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 25px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .filter-bar label {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .filter-bar input, .filter-bar select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        tr:hover { background-color: #f1f5f9; }
+
+        .btn-action-sm {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: #e2e8f0;
+            font-family: inherit;
+            font-weight: 700;
+        }
+        .btn-action-sm:hover { background: #cbd5e1; }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        .badge-no-excuse { background: #fee2e2; color: var(--danger); }
+        .badge-excuse { background: #dcfce7; color: var(--success); }
+        .badge-late { background: #fef3c7; color: #b45309; }
+
+        /* نافذة العرض المنبثقة */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .close-btn {
+            color: var(--danger);
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-field { margin-bottom: 12px; }
+        .modal-field label { font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px; }
+        .modal-field div { background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 1rem; }
+
+        .page-footer {
+            text-align: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+        .loader {
+            display: none;
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary);
+            padding: 30px;
+        }
+
+        /* تنبيهات الغياب المتكرر */
+        .alert-box {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .alert-box h4 { margin: 0 0 10px 0; color: #be123c; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body>
 
-    <!-- شريط التنقل العلوي -->
-    <header class="bg-slate-900/95 border-b border-slate-700/80 sticky top-0 z-40 backdrop-blur px-4 py-2.5 flex justify-between items-center shadow-md no-print">
-        <div class="flex items-center gap-3">
-            <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-white text-base transition" title="العودة للرئيسية">🏠</a>
-            <div>
-                <h1 class="text-sm md:text-base font-black text-amber-400">بوابة الإشراف والمتابعة الإدارية</h1>
-                <p class="text-[11px] text-slate-400 font-bold" id="header-stage-badge">مدرسة البلاد القديم الابتدائية الإعدادية للبنين</p>
-            </div>
+<div class="container">
+    <div class="school-header-container">
+        <img src="https://i.postimg.cc/K88X7RLb/trwysyh-dhhbyt.png" alt="ترويسة مدرسة البلاد القديم" class="school-header">
+    </div>
+
+    <!-- شاشة تسجيل الدخول للمشرفين -->
+    <div id="authSection" class="auth-box">
+        <h2>بوابة المشرفين</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">أدخل كلمة المرور الخاصة بالمرحلة:</p>
+        <input type="password" id="passInput" placeholder="كلمة المرور">
+        <button class="btn-main" onclick="loginSupervisor()">دخول لوحة التحكم</button>
+    </div>
+
+    <div class="loader" id="loader">⏳ جاري تحميل ومطابقة سجلات المرحلة...</div>
+
+    <!-- المحتوى الرئيسي للمشرف -->
+    <div id="mainDashboard" style="display:none;">
+        
+        <!-- التبويبات العلوية -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" id="btnTabAbsence" onclick="switchView('absence')">📊 كشف الغياب اليومي للمرحلة</button>
+            <button class="tab-btn" id="btnTabExcuses" onclick="switchView('excuses')">🛡️ الإرشاد ومطابقة الأعذار</button>
         </div>
 
-        <div class="flex items-center gap-2">
-            <button id="theme-btn" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 text-sm flex items-center justify-center">🌙</button>
-            <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 hover:bg-slate-700 text-slate-300">الرئيسية</a>
-        </div>
-    </header>
-
-    <!-- المحتوى الرئيسي -->
-    <main class="flex-grow p-3 md:p-6 max-w-6xl mx-auto w-full no-print">
-
-        <!-- شاشة تسجيل الدخول بـ PIN المرحلة -->
-        <div id="supervisor-login-card" class="max-w-md mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl mt-12 text-center">
-            <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl mx-auto mb-3">🛡️</div>
-            <h2 class="text-base font-black text-slate-100 mb-1">تسجيل دخول المشرف الإداري</h2>
-            <p class="text-xs text-slate-400 font-bold mb-4">أدخل كلمة المرور الخاصة بمرحلتك الدراسية</p>
-
-            <div class="space-y-3">
-                <input type="password" id="supervisor-pass-input" placeholder="رمز الدخول (PIN)..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-center text-amber-400 font-black tracking-widest text-lg outline-none">
-                <button id="supervisor-login-btn" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition active:scale-95">
-                    دخول المرحلة 🔓
-                </button>
-            </div>
-
-            <div class="mt-5 pt-3 border-t border-slate-800 text-[11px] text-slate-400 font-bold space-y-1 text-right">
-                <p>• السادس الابتدائي: <span class="text-amber-400 font-mono">666</span></p>
-                <p>• الأول الإعدادي: <span class="text-amber-400 font-mono">1111</span></p>
-                <p>• الثاني الإعدادي: <span class="text-amber-400 font-mono">2222</span></p>
-                <p>• الثالث الإعدادي: <span class="text-amber-400 font-mono">55555</span></p>
-            </div>
-        </div>
-
-        <!-- لوحة التحكم الإشرافية بعد التحقق -->
-        <div id="supervisor-content" class="hidden">
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 mb-4 flex flex-wrap justify-between items-center gap-3 shadow-lg">
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl">🛡️</div>
-                    <div>
-                        <h2 class="text-base font-black text-amber-400" id="sup-stage-title">لوحة المشرف الإداري</h2>
-                        <p class="text-xs text-slate-400 font-bold" id="sup-stage-classes-info">الصفوف المسندة: -</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="supervisor-refresh-btn" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-black shadow flex items-center gap-1">
-                        🔄 تحديث السجلات
-                    </button>
-                    <button id="supervisor-logout-btn" class="px-3 py-1.5 bg-slate-700 hover:bg-red-600 text-slate-200 hover:text-white rounded-xl text-xs font-bold transition">
-                        خروج ✕
-                    </button>
-                </div>
-            </div>
-
-            <!-- شريط الفلاتر والبحث -->
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 mb-4 grid grid-cols-1 md:grid-cols-3 gap-3 shadow-md">
+        <div class="content-area">
+            
+            <!-- شريط الفلاتر المشترك -->
+            <div class="filter-bar">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">تصفية حسب الصف:</label>
-                    <select id="sup-filter-class" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2 text-xs font-black text-amber-300 outline-none"></select>
+                    <label>تاريخ العرض:</label>
+                    <input type="date" id="filterDate" onchange="applyFilters()">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">بحث سريع باسم الطالب:</label>
-                    <input type="text" id="sup-filter-student" placeholder="اكتب اسم الطالب..." class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2 text-xs font-bold text-slate-100 outline-none">
+                    <label>الصف:</label>
+                    <select id="filterClass" onchange="applyFilters()">
+                        <option value="all">كل صفوف المرحلة</option>
+                    </select>
                 </div>
-                <div class="flex items-end">
-                    <button id="sup-print-confrontation-btn" class="w-full py-2 bg-red-600 hover:bg-red-500 text-white font-black text-xs rounded-xl shadow flex items-center justify-center gap-1">
-                        🖨️ طباعة ملف مواجهة ولي الأمر (للطالب المحدد)
-                    </button>
-                </div>
+                <button class="btn-main" onclick="applyFilters()" style="padding: 8px 16px;">تحديث 🔄</button>
             </div>
 
-            <!-- جدول استعراض المخالفات -->
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-lg">
-                <table class="w-full text-right text-xs">
-                    <thead class="bg-slate-900 text-slate-300 font-black">
+            <!-- ================= التبويب الأول: الغياب الميداني ================= -->
+            <div id="viewAbsence">
+                <div id="alertsContainer"></div>
+
+                <h3>سجل الغياب اليومي لحصص اليوم المحدد:</h3>
+                <table id="absenceTable">
+                    <thead>
                         <tr>
-                            <th class="p-2.5 text-center w-10">#</th>
-                            <th class="p-2.5">اسم الطالب</th>
-                            <th class="p-2.5 text-center">الصف</th>
-                            <th class="p-2.5">نوع المخالفة</th>
-                            <th class="p-2.5 text-center">المعلم الراصد</th>
-                            <th class="p-2.5 text-center">المادة</th>
-                            <th class="p-2.5 text-center">التاريخ والحصة</th>
+                            <th>الصف</th>
+                            <th>اسم الطالب</th>
+                            <th>الحصة</th>
+                            <th>المعلم الراصد</th>
+                            <th>الحالة</th>
                         </tr>
                     </thead>
-                    <tbody id="sup-table-body" class="divide-y divide-slate-700/60 bg-slate-800/70 font-bold">
-                        <tr><td colspan="7" class="p-6 text-center text-slate-400">جاري انتظار السجلات...</td></tr>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
+
+            <!-- ================= التبويب الثاني: الإرشاد والأعذار ================= -->
+            <div id="viewExcuses" style="display:none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin:0; color: var(--primary);">مطابقة الغياب مع الأعذار الرقمية والورقية:</h3>
+                    <button class="btn-main" onclick="openManualExcuseModal()" style="background-color: var(--accent);">➕ تسجيل عذر يدوي/ورقي</button>
+                </div>
+
+                <table id="excusesTable">
+                    <thead>
+                        <tr>
+                            <th>الرقم الشخصي</th>
+                            <th>اسم الطالب</th>
+                            <th>الصف</th>
+                            <th>الحصص المفقودة</th>
+                            <th>موقف العذر</th>
+                            <th>الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
         </div>
-    </main>
+    </div>
 
-    <!-- تذييل الصفحة الرسمي -->
-    <footer class="mt-auto bg-slate-900 border-t border-slate-800 py-3 px-4 text-center text-xs font-bold text-slate-400 no-print">
-        <p>إعداد وتصميم: <span class="text-sky-400 font-black">أ. صبري محمد حمد</span> | هاتف: <span class="text-amber-400 font-black tracking-wider">36864227</span> - مدرسة البلاد القديم الابتدائية الإعدادية للبنين</p>
-    </footer>
+    <div class="page-footer">
+        إعداد: أ/ صبري محمد حمد
+    </div>
+</div>
 
-    <!-- مساحة طباعة ملف مواجهة المشرف A4 -->
-    <div class="print-area" id="print-behavior-area"></div>
+<!-- نافذة عرض تفاصيل العذر -->
+<div id="detailsModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('detailsModal')">&times;</span>
+        <h3 style="margin-top:0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px;">تفاصيل العذر المسجل</h3>
+        <div class="modal-field"><label>وقت التسجيل:</label><div id="m-time"></div></div>
+        <div class="modal-field"><label>رقم ولي الأمر:</label><div id="m-phone" style="direction:ltr; text-align:right;"></div></div>
+        <div class="modal-field"><label>سبب الغياب:</label><div id="m-reason"></div></div>
+        <div class="modal-field"><label>المرفقات:</label><div id="m-files"></div></div>
+    </div>
+</div>
 
-    <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYdX90JLSoQ6_rmLWX1UdzbtG-jVMZRO9-Ko6pjnwmULr9P4IQElHgLGXQCN0b9HILXg/exec";
+<!-- نافذة تسجيل عذر يدوي بواسطة المشرف -->
+<div id="manualExcuseModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('manualExcuseModal')">&times;</span>
+        <h3 style="margin-top:0; color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: 10px;">تسجيل عذر لطالب (استلام ورقي)</h3>
+        
+        <div class="modal-field">
+            <label>الصف:</label>
+            <select id="m-input-class" onchange="populateManualStudents()" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; font-family:inherit;"></select>
+        </div>
+        <div class="modal-field">
+            <label>اسم الطالب:</label>
+            <select id="m-input-student" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; font-family:inherit;"></select>
+        </div>
+        <div class="modal-field">
+            <label>تاريخ الغياب:</label>
+            <input type="date" id="m-input-date" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; font-family:inherit; box-sizing:border-box;">
+        </div>
+        <div class="modal-field">
+            <label>ملاحظة / سبب العذر:</label>
+            <input type="text" id="m-input-reason" placeholder="مثال: تسليم تقرير طبي معتمد للمشرف" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px; font-family:inherit; box-sizing:border-box;">
+        </div>
+        
+        <button class="btn-main" onclick="submitManualExcuse()" style="width:100%; margin-top:10px; background-color: var(--accent);">حفظ العذر في النظام</button>
+        <div id="manualMsg" style="margin-top:10px; text-align:center; font-weight:700; font-size:0.9rem;"></div>
+    </div>
+</div>
 
-        // خريطة مصادقة المراحل والصفوف
-        const supervisorAuth = {
-            "666": {
-                stageName: "مشرف الصف السادس الابتدائي",
-                classes: ["سادس ابتدائي 1", "سادس ابتدائي 2", "سادس ابتدائي 3"]
-            },
-            "1111": {
-                stageName: "مشرف الصف الأول الإعدادي",
-                classes: ["أول إعدادي 1", "أول إعدادي 2", "أول إعدادي 3", "أول إعدادي 4"]
-            },
-            "2222": {
-                stageName: "مشرف الصف الثاني الإعدادي",
-                classes: ["ثاني إعدادي 1", "ثاني إعدادي 2", "ثاني إعدادي 3", "ثاني إعدادي 4"]
-            },
-            "55555": {
-                stageName: "مشرف الصف الثالث الإعدادي",
-                classes: ["ثالث إعدادي 1", "ثالث إعدادي 2", "ثالث إعدادي 3", "ثالث إعدادي 4", "ثالث إعدادي 5"]
-            }
-        };
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlJnpJN9y9h04cOswtY3BGGwUS8rhybOisxDFkIQJ6_9nFSPMJeK-wiuFEECnBY3v5/exec";
+    let supervisorData = null;
+    let excusesMap = {};
 
-        let currentSupervisorStage = null;
-        let supervisorCloudIncidents = [];
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('filterDate').value = new Date().toLocaleDateString('en-CA');
+        document.getElementById('m-input-date').value = new Date().toLocaleDateString('en-CA');
+    });
 
-        function getDateStr(d = new Date()) {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
+    function switchView(view) {
+        document.getElementById('viewAbsence').style.display = (view === 'absence') ? 'block' : 'none';
+        document.getElementById('viewExcuses').style.display = (view === 'excuses') ? 'block' : 'none';
+        document.getElementById('btnTabAbsence').className = (view === 'absence') ? 'tab-btn active' : 'tab-btn';
+        document.getElementById('btnTabExcuses').className = (view === 'excuses') ? 'tab-btn active' : 'tab-btn';
+    }
+
+    function loginSupervisor() {
+        const pass = document.getElementById('passInput').value;
+        if (!pass) return alert("الرجاء إدخال كلمة المرور");
+
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('loader').style.display = 'block';
+
+        fetch(`${SCRIPT_URL}?action=supervisor&pass=${pass}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loader').style.display = 'none';
+                if (data.status === "success") {
+                    supervisorData = data;
+                    document.getElementById('mainDashboard').style.display = 'block';
+                    
+                    // إعداد قائمة الصفوف
+                    const classSelect = document.getElementById('filterClass');
+                    classSelect.innerHTML = '<option value="all">كل صفوف المرحلة</option>';
+                    data.classes.forEach(c => {
+                        classSelect.innerHTML += `<option value="${c}">${c}</option>`;
+                    });
+
+                    // إعداد قائمة الصفوف لنافذة الإدخال اليدوي
+                    const manualClass = document.getElementById('m-input-class');
+                    manualClass.innerHTML = '<option value="">-- اختر الصف --</option>';
+                    data.classes.forEach(c => {
+                        manualClass.innerHTML += `<option value="${c}">${c}</option>`;
+                    });
+
+                    applyFilters();
+                } else {
+                    alert(data.message || "فشل تسجيل الدخول");
+                    document.getElementById('authSection').style.display = 'block';
+                }
+            })
+            .catch(err => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('authSection').style.display = 'block';
+                alert("حدث خطأ أثناء الاتصال بالخادم");
+            });
+    }
+
+    function copyText(val) {
+        navigator.clipboard.writeText(val).then(() => {
+            alert("تم نسخ: " + val);
+        });
+    }
+
+    function applyFilters() {
+        if (!supervisorData) return;
+
+        const targetDate = document.getElementById('filterDate').value;
+        const targetClass = document.getElementById('filterClass').value;
+
+        // خريطة الأعذار لتاريخ العرض
+        excusesMap = {};
+        if (supervisorData.excuses) {
+            supervisorData.excuses.forEach(ex => {
+                if (ex.date === targetDate) {
+                    let sClean = ex.studentName.replace(/^[\d\s._-]+/, '').trim();
+                    excusesMap[sClean] = ex;
+                }
+            });
         }
 
-        // تسجيل دخول المشرف
-        document.getElementById('supervisor-login-btn').onclick = () => {
-            const pin = document.getElementById('supervisor-pass-input').value.trim();
-            if (supervisorAuth[pin]) {
-                currentSupervisorStage = supervisorAuth[pin];
-                document.getElementById('supervisor-pass-input').value = '';
-                document.getElementById('supervisor-login-card').classList.add('hidden');
-                document.getElementById('supervisor-content').classList.remove('hidden');
+        // 1. معالجة وتعبئة جدول الغياب الميداني
+        const absTbody = document.querySelector('#absenceTable tbody');
+        absTbody.innerHTML = '';
+        
+        let filteredAbsences = supervisorData.data.filter(r => {
+            return r.date === targetDate && (targetClass === 'all' || r.className === targetClass);
+        });
 
-                document.getElementById('sup-stage-title').textContent = currentSupervisorStage.stageName;
-                document.getElementById('sup-stage-classes-info').textContent = `الصفوف المسندة: ${currentSupervisorStage.classes.join(' ، ')}`;
-                document.getElementById('header-stage-badge').textContent = currentSupervisorStage.stageName;
+        filteredAbsences.forEach(r => {
+            let sClean = r.studentName.replace(/^[\d\s._-]+/, '').trim();
+            let hasExcuse = !!excusesMap[sClean];
+            let badgeHtml = hasExcuse ? `<span class="status-badge badge-excuse">يوجد عذر مسجل</span>` : (r.excuseType ? `<span class="status-badge badge-late">${r.excuseType}</span>` : `<span class="status-badge badge-no-excuse">بدون عذر</span>`);
 
-                // تعبئة قائمة التصفية بصفوف المرحلة المحددة فقط
-                const classFilter = document.getElementById('sup-filter-class');
-                classFilter.innerHTML = '<option value="all">جميع صفوف المرحلة</option>';
-                currentSupervisorStage.classes.forEach(cls => {
-                    const opt = document.createElement('option');
-                    opt.value = cls;
-                    opt.textContent = cls;
-                    classFilter.appendChild(opt);
+            absTbody.innerHTML += `
+                <tr>
+                    <td>${r.className}</td>
+                    <td style="font-weight:700;">${r.studentName}</td>
+                    <td>حصة ${r.period}</td>
+                    <td style="color:var(--text-muted); font-size:0.9rem;">${r.teacher}</td>
+                    <td>${badgeHtml}</td>
+                </tr>
+            `;
+        });
+
+        if (filteredAbsences.length === 0) {
+            absTbody.innerHTML = '<tr><td colspan="5" style="color:var(--text-muted); font-weight:700;">لا توجد حالات غياب مسجلة لهذا اليوم</td></tr>';
+        }
+
+        // 2. معالجة وتعبئة جدول الإرشاد والأعذار
+        const excTbody = document.querySelector('#excusesTable tbody');
+        excTbody.innerHTML = '';
+
+        // تجميع الحصص لكل طالب غائب في هذا اليوم
+        let studentAbsMap = {};
+        filteredAbsences.forEach(r => {
+            if (!r.studentName.includes('لا يوجد')) {
+                let sClean = r.studentName.replace(/^[\d\s._-]+/, '').trim();
+                if (!studentAbsMap[sClean]) {
+                    studentAbsMap[sClean] = { rawName: r.studentName, className: r.className, periods: [] };
+                }
+                if (!studentAbsMap[sClean].periods.includes(r.period)) {
+                    studentAbsMap[sClean].periods.push(r.period);
+                }
+            }
+        });
+
+        // إضافة من قدم عذراً ولم يُرصد له غياب في الحصص
+        Object.keys(excusesMap).forEach(sClean => {
+            let ex = excusesMap[sClean];
+            if (targetClass === 'all' || ex.className === targetClass) {
+                if (!studentAbsMap[sClean]) {
+                    studentAbsMap[sClean] = { rawName: ex.studentName, className: ex.className, periods: ['(عذر مسبق)'] };
+                }
+            }
+        });
+
+        Object.keys(studentAbsMap).sort().forEach(sClean => {
+            let item = studentAbsMap[sClean];
+            let ex = excusesMap[sClean];
+            let cpr = (supervisorData.cprMap && supervisorData.cprMap[sClean]) ? supervisorData.cprMap[sClean] : "غير متوفر";
+
+            let statusHtml = ex ? 
+                `<span class="status-badge badge-excuse">تم تقديم عذر</span>` : 
+                `<span class="status-badge badge-no-excuse">لم يقدم عذر</span>`;
+
+            let actionHtml = ex ? 
+                `<button class="btn-action-sm" onclick="showExcuseDetails('${sClean}')">📄 عرض التفاصيل</button>` : 
+                `<button class="btn-action-sm" style="background-color:#fed7aa;" onclick="quickManualFill('${item.className}', '${sClean}')">➕ تسجيل عذر له</button>`;
+
+            excTbody.innerHTML += `
+                <tr>
+                    <td style="font-weight:700; color:var(--primary);">
+                        ${cpr} 
+                        ${cpr !== 'غير متوفر' ? `<button class="btn-action-sm" onclick="copyText('${cpr}')">نسخ</button>` : ''}
+                    </td>
+                    <td style="font-weight:700;">${item.rawName}</td>
+                    <td>${item.className}</td>
+                    <td>${item.periods.join(' ، ')}</td>
+                    <td>${statusHtml}</td>
+                    <td>${actionHtml}</td>
+                </tr>
+            `;
+        });
+
+        if (Object.keys(studentAbsMap).length === 0) {
+            excTbody.innerHTML = '<tr><td colspan="6" style="color:var(--text-muted); font-weight:700;">لا توجد سجلات لمطابقتها في هذا اليوم</td></tr>';
+        }
+
+        // 3. تنبيهات الغياب المتكرر
+        const alertBox = document.getElementById('alertsContainer');
+        if (supervisorData.alerts && supervisorData.alerts.length > 0) {
+            let alertsHtml = '<div class="alert-box"><h4>⚠️ تنبيهات المتابعة: طلاب تجاوزوا 5 أيام غياب كلي:</h4><ul style="margin:0; padding-right:20px; font-size:0.95rem;">';
+            supervisorData.alerts.forEach(al => {
+                if (targetClass === 'all' || al.className === targetClass) {
+                    alertsHtml += `<li><strong>${al.studentName}</strong> (${al.className}) - مجموع الغياب: ${al.totalAbsences} أيام [التواريخ: ${al.datesList}]</li>`;
+                }
+            });
+            alertsHtml += '</ul></div>';
+            alertBox.innerHTML = alertsHtml;
+        } else {
+            alertBox.innerHTML = '';
+        }
+    }
+
+    function showExcuseDetails(sClean) {
+        let ex = excusesMap[sClean];
+        if (!ex) return;
+
+        document.getElementById('m-time').innerText = ex.time;
+        document.getElementById('m-phone').innerText = ex.parentPhone || "غير مسجل";
+        document.getElementById('m-reason').innerText = ex.reason || "لم يذكر سبب";
+
+        let filesDiv = document.getElementById('m-files');
+        filesDiv.innerHTML = '';
+        if (ex.files && ex.files.trim() !== '') {
+            let links = ex.files.split('\n');
+            links.forEach((l, idx) => {
+                if (l.trim().startsWith('http')) {
+                    filesDiv.innerHTML += `<a href="${l.trim()}" target="_blank" class="btn-action-sm" style="display:inline-block; margin:2px;">📎 فتح المرفق ${idx + 1}</a> `;
+                } else {
+                    filesDiv.innerHTML += `<span>${l}</span>`;
+                }
+            });
+        } else {
+            filesDiv.innerText = "لا توجد مرفقات (عذر ورقي / ملاحظة شفهية)";
+        }
+
+        document.getElementById('detailsModal').style.display = 'block';
+    }
+
+    function openManualExcuseModal() {
+        document.getElementById('manualMsg').innerText = '';
+        document.getElementById('manualExcuseModal').style.display = 'block';
+    }
+
+    function populateManualStudents() {
+        const cls = document.getElementById('m-input-class').value;
+        const sSelect = document.getElementById('m-input-student');
+        sSelect.innerHTML = '<option value="">-- اختر الطالب --</option>';
+
+        if (cls && supervisorData.rosters && supervisorData.rosters[cls]) {
+            supervisorData.rosters[cls].forEach(s => {
+                sSelect.innerHTML += `<option value="${s}">${s}</option>`;
+            });
+        }
+    }
+
+    function quickManualFill(className, studentName) {
+        openManualExcuseModal();
+        document.getElementById('m-input-class').value = className;
+        populateManualStudents();
+        document.getElementById('m-input-student').value = studentName;
+    }
+
+    function submitManualExcuse() {
+        const cls = document.getElementById('m-input-class').value;
+        const student = document.getElementById('m-input-student').value;
+        const date = document.getElementById('m-input-date').value;
+        const reason = document.getElementById('m-input-reason').value || "تم الاستلام والمصادقة من قبل مشرف المرحلة";
+        const msg = document.getElementById('manualMsg');
+
+        if (!cls || !student || !date) {
+            msg.innerText = "⚠️ يرجى اختيار الصف واسم الطالب والتاريخ";
+            msg.style.color = "var(--danger)";
+            return;
+        }
+
+        msg.innerText = "⏳ جاري حفظ وتوثيق العذر...";
+        msg.style.color = "var(--primary)";
+
+        let sClean = student.replace(/^[\d\s._-]+/, '').trim();
+        let cpr = (supervisorData.cprMap && supervisorData.cprMap[sClean]) ? supervisorData.cprMap[sClean] : "مسجل يدوياً";
+
+        const payload = {
+            cpr: cpr,
+            studentName: student,
+            className: cls,
+            absenceDate: date,
+            parentPhone: "إشراف المرحلة",
+            reason: reason,
+            files: []
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                msg.innerText = "✅ تم تسجيل العذر بنجاح!";
+                msg.style.color = "var(--success)";
+                
+                // تحديث البيانات محلياً
+                supervisorData.excuses.push({
+                    date: date,
+                    time: new Date().toLocaleTimeString('ar-BH'),
+                    cpr: cpr,
+                    studentName: student,
+                    className: cls,
+                    parentPhone: "إشراف المرحلة",
+                    reason: reason,
+                    files: ""
                 });
 
-                fetchSupervisorData();
+                setTimeout(() => {
+                    closeModal('manualExcuseModal');
+                    applyFilters();
+                }, 1500);
             } else {
-                alert('كلمة المرور غير صحيحة! يرجى إدخال PIN الصحيح لمرحلتك.');
+                msg.innerText = "فشل التسجيل: " + data.message;
+                msg.style.color = "var(--danger)";
             }
-        };
+        })
+        .catch(err => {
+            msg.innerText = "حدث خطأ في الاتصال";
+            msg.style.color = "var(--danger)";
+        });
+    }
 
-        // تسجيل الخروج
-        document.getElementById('supervisor-logout-btn').onclick = () => {
-            currentSupervisorStage = null;
-            document.getElementById('supervisor-login-card').classList.remove('hidden');
-            document.getElementById('supervisor-content').classList.add('hidden');
-            document.getElementById('header-stage-badge').textContent = "مدرسة البلاد القديم الابتدائية الإعدادية للبنين";
-        };
-
-        // استدعاء البيانات السحابية
-        async function fetchSupervisorData() {
-            if (!currentSupervisorStage) return;
-            const tbody = document.getElementById('sup-table-body');
-            tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-sky-400 font-bold">⏳ جاري جلب المخالفات من الشيت...</td></tr>';
-            try {
-                const res = await fetch(`${GOOGLE_SCRIPT_URL}?type=supervisorData`, { method: 'GET', redirect: 'follow' });
-                supervisorCloudIncidents = await res.json();
-                renderSupervisorTable();
-            } catch(e) {
-                tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-red-400 font-bold">تعذر استدعاء البيانات من السحابة.</td></tr>';
-            }
-        }
-
-        document.getElementById('supervisor-refresh-btn').onclick = fetchSupervisorData;
-
-        // رسم جدول المخالفات بناءً على الفلاتر
-        function renderSupervisorTable() {
-            if (!currentSupervisorStage) return;
-            const cls = document.getElementById('sup-filter-class').value;
-            const query = document.getElementById('sup-filter-student').value.trim().toLowerCase();
-            const tbody = document.getElementById('sup-table-body');
-            tbody.innerHTML = '';
-
-            const filtered = supervisorCloudIncidents.filter(item => {
-                // فلترة مقتصرة على صفوف المرحلة فقط
-                if (!currentSupervisorStage.classes.includes(item.className)) return false;
-                if (cls !== 'all' && item.className !== cls) return false;
-                if (query && !item.studentName.toLowerCase().includes(query)) return false;
-                return true;
-            });
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400 font-bold">لا توجد مخالفات مسجلة لهذه المرحلة حتى الآن.</td></tr>';
-                return;
-            }
-
-            filtered.forEach((inc, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-2 text-center text-slate-400">${idx + 1}</td>
-                    <td class="p-2 font-black text-sky-300">${inc.studentName}</td>
-                    <td class="p-2 text-center font-bold text-amber-400">${inc.className}</td>
-                    <td class="p-2 text-red-400 font-bold">${inc.reason}</td>
-                    <td class="p-2 text-center text-slate-200 font-bold">${inc.teacherName}</td>
-                    <td class="p-2 text-center text-slate-400">${inc.subject}</td>
-                    <td class="p-2 text-center text-slate-400 text-[11px]">${inc.day} (${inc.date}) - ${inc.period}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        document.getElementById('sup-filter-class').onchange = renderSupervisorTable;
-        document.getElementById('sup-filter-student').oninput = renderSupervisorTable;
-
-        // طباعة ملف مواجهة ولي الأمر التراكمي المجمع
-        document.getElementById('sup-print-confrontation-btn').onclick = () => {
-            const stQuery = document.getElementById('sup-filter-student').value.trim();
-            if (!stQuery) {
-                alert('يرجى كتابة اسم الطالب أولاً في خانة البحث لتوليد ملف المواجهة المجمع الخاص به.');
-                return;
-            }
-
-            const studentIncidents = supervisorCloudIncidents.filter(item => {
-                return currentSupervisorStage.classes.includes(item.className) && item.studentName.includes(stQuery);
-            });
-
-            if (studentIncidents.length === 0) {
-                alert(`لم يتم العثور على مخالفات مسجلة باسم (${stQuery}) في هذه المرحلة.`);
-                return;
-            }
-
-            const stName = studentIncidents[0].studentName;
-            const stClass = studentIncidents[0].className;
-            const printArea = document.getElementById('print-behavior-area');
-            printArea.innerHTML = '';
-
-            let rowsHtml = '';
-            studentIncidents.forEach((inc, idx) => {
-                rowsHtml += `
-                    <tr>
-                        <td style="border: 1px solid #333; padding: 7px; text-align: center; font-weight: bold;">${idx + 1}</td>
-                        <td style="border: 1px solid #333; padding: 7px; text-align: center;">${inc.day} (${inc.date})</td>
-                        <td style="border: 1px solid #333; padding: 7px; text-align: center;">${inc.period}</td>
-                        <td style="border: 1px solid #333; padding: 7px; font-weight: bold; color: #991b1b;">${inc.reason}</td>
-                        <td style="border: 1px solid #333; padding: 7px; text-align: center; font-weight: bold;">${inc.teacherName} (${inc.subject})</td>
-                    </tr>
-                `;
-            });
-
-            printArea.innerHTML = `
-                <div>
-                    <div style="width: 100%; text-align: center; margin-bottom: 12px;">
-                        <img src="https://i.postimg.cc/K88X7RLb/trwysyh-dhhbyt.png" alt="ترويسة المدرسة" style="width: 100%; max-height: 130px; object-fit: contain;">
-                    </div>
-
-                    <div style="text-align: center; border-bottom: 2px solid #b91c1c; padding-bottom: 8px; margin-bottom: 14px;">
-                        <h2 style="font-size: 20px; font-weight: 900; margin: 0; color: #991b1b;">ملف مواجهة ولي الأمر بمخالفات الطالب الصفيّة (تراكمي مجمع)</h2>
-                        <p style="font-size: 13px; font-weight: bold; color: #475569; margin: 3px 0 0 0;">إشراف: ${currentSupervisorStage.stageName}</p>
-                    </div>
-
-                    <div style="background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 14px; font-weight: bold; color: #1e293b; line-height: 1.7;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                            <span>اسم الطالب: <span style="color: #1e3a8a; font-size: 16px;">${stName}</span></span>
-                            <span>الصف: <span style="color: #1e3a8a;">${stClass}</span></span>
-                            <span style="color: #b91c1c;">إجمالي المخالفات المسجلة: (${studentIncidents.length})</span>
-                        </div>
-                        <p style="margin: 0; font-size: 13px; font-weight: normal; color: #334155;">
-                            تم حصر المخالفات الموثقة من كافة معلمي المواد الدراسية لإحاطة ولي الأمر بضرورة التعاون مع الإدارة المدرسية لتعديل سلوك الطالب والحفاظ على درجات الانضباط الصفي:
-                        </p>
-                    </div>
-
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px;">
-                        <thead>
-                            <tr style="background-color: #fee2e2; -webkit-print-color-adjust: exact;">
-                                <th style="border: 1px solid #333; padding: 7px; width: 40px; text-align: center;">#</th>
-                                <th style="border: 1px solid #333; padding: 7px; width: 140px; text-align: center;">اليوم والتاريخ</th>
-                                <th style="border: 1px solid #333; padding: 7px; width: 90px; text-align: center;">الحصة</th>
-                                <th style="border: 1px solid #333; padding: 7px; text-align: right;">المخالفة المرصودة</th>
-                                <th style="border: 1px solid #333; padding: 7px; width: 180px; text-align: center;">المعلم الراصد والمادة</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rowsHtml}
-                        </tbody>
-                    </table>
-
-                    <div style="margin-top: 35px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 13px; font-weight: bold; padding: 0 15px;">
-                        <div style="text-align: center;">
-                            <div>${currentSupervisorStage.stageName}</div>
-                            <div style="margin-top: 25px; border-bottom: 1px dotted #333; width: 140px;"></div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div>توقيع ولي الأمر بالعلم</div>
-                            <div style="margin-top: 25px; border-bottom: 1px dotted #333; width: 140px;"></div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div>مدير المدرسة</div>
-                            <div style="margin-top: 8px; color: #1e3a8a;">الأستاذ: محمد ابراهيم محمد ناصر</div>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 25px; text-align: center; border-top: 1px dotted #94a3b8; padding-top: 6px; font-size: 11px; color: #64748b; font-weight: bold;">
-                        إعداد وتصميم: أ. صبري محمد حمد - هاتف: 36864227
-                    </div>
-                </div>
-            `;
-
-            const originalTitle = document.title;
-            document.title = `ملف_مواجهة_مخالفات_${stName}_${getDateStr()}`;
-            setTimeout(() => {
-                window.print();
-                setTimeout(() => { document.title = originalTitle; }, 1000);
-            }, 100);
-        };
-
-        // تبديل الوضع الليلي
-        document.getElementById('theme-btn').onclick = () => {
-            document.body.classList.toggle('light-mode');
-            document.getElementById('theme-btn').textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
-        };
-    </script>
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+</script>
 </body>
 </html>
